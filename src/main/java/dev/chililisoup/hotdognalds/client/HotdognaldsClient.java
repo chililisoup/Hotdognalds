@@ -1,6 +1,6 @@
 package dev.chililisoup.hotdognalds.client;
 
-import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.client.reg.ModEntityRenderers;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,6 +9,6 @@ import net.fabricmc.api.Environment;
 public final class HotdognaldsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        Hotdognalds.LOGGER.info("Hello client!");
+        ModEntityRenderers.init();
     }
 }
