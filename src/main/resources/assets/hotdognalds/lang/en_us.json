@@ -1,4 +1,10 @@
 {
+  "item.hotdognalds.hotdog": "%s Hotdog",
+  "item.hotdognalds.hotdog.raw": "Raw",
+  "item.hotdognalds.hotdog.rare": "Rare",
+  "item.hotdognalds.hotdog.cooked": "Cooked",
+  "item.hotdognalds.hotdog.burnt": "Burnt",
+  "item.hotdognalds.hotdog.congratulation": "Congratulation",
   "block.hotdognalds.grill": "Grill",
   "itemGroup.hotdognalds.main": "Hotdognalds"
 }

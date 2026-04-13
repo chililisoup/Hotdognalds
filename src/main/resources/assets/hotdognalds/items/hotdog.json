@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "hotdognalds:item/hotdog",
+    "model": {
+      "type": "hotdognalds:hotdog"
+    }
+  }
+}

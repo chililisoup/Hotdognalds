@@ -9,11 +9,25 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
 public final class ModItems {
-    public static Item HOTDOG = register("hotdog", HotdogItem::new);
+    public static Item HOTDOG;
+
+    static {
+        HOTDOG = register(
+                "hotdog",
+                HotdogItem::new,
+                new Properties().component(ModComponents.COOK_AMOUNT, 0F)
+        );
+        CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> {
+            ItemStack cookedHotdog = HOTDOG.getDefaultInstance();
+            cookedHotdog.set(ModComponents.COOK_AMOUNT, 1F);
+            tab.accept(cookedHotdog);
+        });
+    }
 
     private static Item register(
             String name,

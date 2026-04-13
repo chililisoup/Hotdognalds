@@ -16,7 +16,7 @@ public final class ModEntityTypes {
             EntityType.Builder.of(Hotdog::new, MobCategory.MISC)
                     .noLootTable()
                     .noSummon()
-                    .sized(0.25F, 0.25F)
+                    .sized(0.3F, 0.2F)
     );
 
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {

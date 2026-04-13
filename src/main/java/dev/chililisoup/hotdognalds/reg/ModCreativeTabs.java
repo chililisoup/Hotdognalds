@@ -13,7 +13,11 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Supplier;
 
 public final class ModCreativeTabs {
-    public static final ResourceKey<CreativeModeTab> MAIN = register("main", () -> ModBlocks.GRILL.asItem().getDefaultInstance());
+    public static final ResourceKey<CreativeModeTab> MAIN = register("main", () -> {
+        ItemStack cookedHotdog = ModItems.HOTDOG.getDefaultInstance();
+        cookedHotdog.set(ModComponents.COOK_AMOUNT, 1F);
+        return cookedHotdog;
+    });
 
     private static ResourceKey<CreativeModeTab> register(String name, Supplier<ItemStack> iconSupplier) {
         ResourceKey<CreativeModeTab> tabKey = ResourceKey.create(

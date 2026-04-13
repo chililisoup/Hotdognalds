@@ -7,4 +7,5 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 @Environment(EnvType.CLIENT)
 public class HotdogRenderState extends EntityRenderState {
     public float yRot;
+    public float cookAmt;
 }
