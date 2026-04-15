@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "hotdognalds:item/condiment_dispenser",
+    "tints": [{
+      "type": "minecraft:dye",
+      "default": -214525
+    }]
+  }
+}

@@ -1,6 +1,7 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.entity.CondimentDispenser;
 import dev.chililisoup.hotdognalds.entity.Hotdog;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,6 +18,14 @@ public final class ModEntityTypes {
                     .noLootTable()
                     .noSummon()
                     .sized(0.3F, 0.2F)
+    );
+
+    public static final EntityType<CondimentDispenser> CONDIMENT_DISPENSER = register(
+            "condiment_dispenser",
+            EntityType.Builder.of(CondimentDispenser::new, MobCategory.MISC)
+                    .noLootTable()
+                    .noSummon()
+                    .sized(0.25F, 0.4375F)
     );
 
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {

@@ -16,10 +16,11 @@ public final class Hotdognalds implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        ModEntityTypes.init();
         ModComponents.init();
         ModCreativeTabs.init();
         ModBlocks.init();
         ModItems.init();
-        ModEntityTypes.init();
+        ModParticles.init();
     }
 }

@@ -1,7 +1,9 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.entity.CondimentDispenser;
 import dev.chililisoup.hotdognalds.item.HotdogItem;
+import dev.chililisoup.hotdognalds.item.SpawnItem;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +17,7 @@ import java.util.function.Function;
 
 public final class ModItems {
     public static Item HOTDOG;
+    public static Item CONDIMENT_DISPENSER;
 
     static {
         HOTDOG = register(
@@ -23,10 +26,15 @@ public final class ModItems {
                 new Properties().component(ModComponents.COOK_AMOUNT, 0F)
         );
         CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> {
-            ItemStack cookedHotdog = HOTDOG.getDefaultInstance();
+            ItemStack cookedHotdog = new ItemStack(HOTDOG);
             cookedHotdog.set(ModComponents.COOK_AMOUNT, 1F);
             tab.accept(cookedHotdog);
         });
+
+        CONDIMENT_DISPENSER = register(
+                "condiment_dispenser",
+                properties -> new SpawnItem<>(properties, ModEntityTypes.CONDIMENT_DISPENSER, CondimentDispenser::create)
+        );
     }
 
     private static Item register(

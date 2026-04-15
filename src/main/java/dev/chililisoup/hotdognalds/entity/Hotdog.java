@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 public class Hotdog extends Entity {
     private static final EntityDataAccessor<Float> DATA_COOK_AMT = SynchedEntityData.defineId(Hotdog.class, EntityDataSerializers.FLOAT);
 
-    protected InterpolationHandler interpolation = new InterpolationHandler(this);
+    protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
     public Hotdog(EntityType<Hotdog> type, Level level) {
         super(type, level);
@@ -52,12 +52,19 @@ public class Hotdog extends Entity {
             @Nullable Player player
     ) {
         Consumer<Hotdog> consumer = EntityType.createDefaultStackConfig(serverLevel, itemStack, player);
-        Hotdog hotdog = ModEntityTypes.HOTDOG.create(serverLevel, consumer, BlockPos.containing(position), entitySpawnReason, true, true);
+        Hotdog hotdog = ModEntityTypes.HOTDOG.create(
+                serverLevel,
+                consumer,
+                BlockPos.containing(position),
+                entitySpawnReason,
+                true,
+                true
+        );
         if (hotdog == null) return null;
 
         hotdog.setCookAmt(itemStack.getOrDefault(ModComponents.COOK_AMOUNT, 0F));
         hotdog.snapTo(position, rotation, 0);
-        hotdog.playSound(SoundEvents.SLIME_BLOCK_PLACE, 0.75F, 1F);
+        hotdog.playSound(SoundEvents.PAINTING_PLACE, 0.75F, 1F);
         hotdog.gameEvent(GameEvent.ENTITY_PLACE, player);
         return hotdog;
     }
@@ -124,7 +131,7 @@ public class Hotdog extends Entity {
 
             if (handStack.isEmpty()) player.setItemInHand(hand, hotdogStack);
             else handStack.grow(1);
-            this.playSound(SoundEvents.SLIME_BLOCK_BREAK, 0.75F, 1F);
+            this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
         }
 
         return InteractionResult.SUCCESS_SERVER;
@@ -164,14 +171,14 @@ public class Hotdog extends Entity {
 
             ItemStack drop = this.getItemStack();
             Block.popResource(this.level(), this.blockPosition(), drop);
-            this.playSound(SoundEvents.SLIME_BLOCK_BREAK, 0.75F, 1F);
+            this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
         }
 
         return true;
     }
 
     private ItemStack getItemStack() {
-        ItemStack result = ModItems.HOTDOG.getDefaultInstance();
+        ItemStack result = new ItemStack(ModItems.HOTDOG);
 
         float cookAmt = this.getCookAmt();
         if (cookAmt >= 1F && cookAmt <= 2F) cookAmt = 1F;
@@ -188,7 +195,7 @@ public class Hotdog extends Entity {
 
     @Override
     public boolean isPickable() {
-        return true;
+        return !this.isRemoved();
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public final class ModCreativeTabs {
     public static final ResourceKey<CreativeModeTab> MAIN = register("main", () -> {
-        ItemStack cookedHotdog = ModItems.HOTDOG.getDefaultInstance();
+        ItemStack cookedHotdog = new ItemStack(ModItems.HOTDOG);
         cookedHotdog.set(ModComponents.COOK_AMOUNT, 1F);
         return cookedHotdog;
     });

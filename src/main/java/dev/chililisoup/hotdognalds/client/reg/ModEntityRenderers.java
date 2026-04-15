@@ -1,7 +1,9 @@
 package dev.chililisoup.hotdognalds.client.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.client.model.CondimentDispenserModel;
 import dev.chililisoup.hotdognalds.client.model.HotdogModel;
+import dev.chililisoup.hotdognalds.client.renderer.CondimentDispenserRenderer;
 import dev.chililisoup.hotdognalds.client.renderer.HotdogRenderer;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
 import net.fabricmc.api.EnvType;
@@ -20,6 +22,13 @@ public final class ModEntityRenderers {
             ModEntityTypes.HOTDOG,
             HotdogRenderer::new,
             HotdogModel::createBodyLayer
+    );
+
+    public static final ModelLayerLocation CONDIMENT_DISPENSER_MODEL = register(
+            "condiment_dispenser",
+            ModEntityTypes.CONDIMENT_DISPENSER,
+            CondimentDispenserRenderer::new,
+            CondimentDispenserModel::createBodyLayer
     );
 
     private static <T extends Entity> ModelLayerLocation register(

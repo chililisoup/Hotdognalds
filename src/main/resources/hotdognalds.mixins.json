@@ -3,7 +3,9 @@
   "minVersion": "0.8",
   "package": "dev.chililisoup.hotdognalds.mixin",
   "compatibilityLevel": "JAVA_21",
-  "client": [],
+  "client": [
+    "client.ParticleResourcesMixin"
+  ],
   "server": [],
   "injectors": {
     "defaultRequire": 1

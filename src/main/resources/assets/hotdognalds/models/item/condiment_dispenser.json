@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "hotdognalds:item/condiment_dispenser",
+    "layer1": "hotdognalds:item/condiment_dispenser_overlay"
+  }
+}

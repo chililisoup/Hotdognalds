@@ -15,10 +15,10 @@ public class HotdogModel extends EntityModel<HotdogRenderState> {
     }
 
     public static LayerDefinition createBodyLayer() {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
 
-        PartDefinition bone = partDefinition.addOrReplaceChild(
+        PartDefinition bone = root.addOrReplaceChild(
                 "bone",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
@@ -40,6 +40,6 @@ public class HotdogModel extends EntityModel<HotdogRenderState> {
                 PartPose.offsetAndRotation(0.0F, -1.0F, -5.0F, -2.3562F, 0.6109F, -0.5236F)
         );
 
-        return LayerDefinition.create(meshDefinition, 32, 16);
+        return LayerDefinition.create(mesh, 32, 16);
     }
 }

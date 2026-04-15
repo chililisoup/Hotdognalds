@@ -5,6 +5,9 @@
   "item.hotdognalds.hotdog.cooked": "Cooked",
   "item.hotdognalds.hotdog.burnt": "Burnt",
   "item.hotdognalds.hotdog.congratulation": "Congratulation",
+  "item.hotdognalds.condiment_dispenser": "Condiment Dispenser",
+  "entity.hotdognalds.hotdog": "Hotdog",
+  "entity.hotdognalds.condiment_dispenser": "Condiment Dispenser",
   "block.hotdognalds.grill": "Grill",
   "itemGroup.hotdognalds.main": "Hotdognalds"
 }
