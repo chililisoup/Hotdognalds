@@ -1,13 +1,13 @@
 package dev.chililisoup.hotdognalds.entity;
 
+import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
+import dev.chililisoup.hotdognalds.reg.ModEntityDataSerializers;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
-import dev.chililisoup.hotdognalds.reg.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -34,7 +34,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 public class Hotdog extends Entity {
-    private static final EntityDataAccessor<Float> DATA_COOK_AMT = SynchedEntityData.defineId(Hotdog.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<HotdogContents> DATA_CONTENTS = SynchedEntityData.defineId(
+            Hotdog.class, ModEntityDataSerializers.HOTDOG_CONTENTS
+    );
 
     protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
@@ -62,11 +64,19 @@ public class Hotdog extends Entity {
         );
         if (hotdog == null) return null;
 
-        hotdog.setCookAmt(itemStack.getOrDefault(ModComponents.COOK_AMOUNT, 0F));
+        hotdog.setContents(itemStack.getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG));
         hotdog.snapTo(position, rotation, 0);
-        hotdog.playSound(SoundEvents.PAINTING_PLACE, 0.75F, 1F);
+        hotdog.playPlaceSound();
         hotdog.gameEvent(GameEvent.ENTITY_PLACE, player);
         return hotdog;
+    }
+
+    private void playPlaceSound() {
+        this.playSound(SoundEvents.PAINTING_PLACE, 0.75F, 1F);
+    }
+
+    private void playTakeSound() {
+        this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
     }
 
     @Override
@@ -96,8 +106,11 @@ public class Hotdog extends Entity {
         if (this.getInBlockState().getBlock() instanceof BaseFireBlock) return;
 
         if (this.level().isClientSide()) {
-            float xd = this.random.nextBoolean() ? -0.0625F : 0.0625F;
-            float zd = (this.random.nextFloat() - 0.5F) * 0.5F;
+            float halfWidth = this.hasBun() ? 0.10375F : 0.0725F;
+            float length = this.hasBun() ? 0.375F : 0.5F;
+
+            float xd = this.random.nextBoolean() ? -halfWidth : halfWidth;
+            float zd = (this.random.nextFloat() - 0.5F) * length;
 
             float angle = Mth.PI * this.getYRot() / 180F;
             float sin = Mth.sin(angle);
@@ -121,6 +134,38 @@ public class Hotdog extends Entity {
         if (player.isSpectator()) return InteractionResult.SUCCESS;
 
         ItemStack handStack = player.getItemInHand(hand);
+        boolean offHand = hand == InteractionHand.OFF_HAND;
+
+        if (!this.hasDog()) {
+            HotdogContents handContents = handStack.get(ModComponents.HOTDOG_CONTENTS);
+            if (handContents != null && handContents.hasDog() && !handContents.hasBun()) {
+                if (!this.isRemoved() && !player.level().isClientSide()) {
+                    this.setCookAmt(handContents.cookAmt().orElse(0F));
+                    handStack.consume(1, player);
+
+                    this.playPlaceSound();
+                }
+
+                return InteractionResult.SUCCESS_SERVER;
+            }
+        } else if (this.hasBun() && player.isShiftKeyDown()) {
+            ItemStack hotdogStack = this.getMutable().takeBun().toImmutable().getRoundedItemStack();
+            if ((!offHand && handStack.isEmpty()) || ItemStack.isSameItemSameComponents(handStack, hotdogStack)) {
+                if (!this.isRemoved() && !player.level().isClientSide()) {
+                    this.setMutable(this.getMutable().takeDog());
+
+                    if (handStack.isEmpty()) {
+                        if (offHand) player.addItem(hotdogStack);
+                        else player.setItemInHand(hand, hotdogStack);
+                    } else handStack.grow(1);
+
+                    this.playTakeSound();
+                }
+
+                return InteractionResult.SUCCESS_SERVER;
+            }
+        }
+
         ItemStack hotdogStack = this.getItemStack();
         if (!handStack.isEmpty() && !ItemStack.isSameItemSameComponents(handStack, hotdogStack))
             return InteractionResult.PASS;
@@ -129,20 +174,56 @@ public class Hotdog extends Entity {
             this.kill(serverLevel);
             this.markHurt();
 
-            if (handStack.isEmpty()) player.setItemInHand(hand, hotdogStack);
-            else handStack.grow(1);
-            this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
+            if (handStack.isEmpty()) {
+                if (offHand) player.addItem(hotdogStack);
+                else player.setItemInHand(hand, hotdogStack);
+            } else handStack.grow(1);
+
+            this.playTakeSound();
         }
 
         return InteractionResult.SUCCESS_SERVER;
     }
 
-    public float getCookAmt() {
-        return Math.clamp(this.getEntityData().get(DATA_COOK_AMT), 0F, 3F);
+    public HotdogContents getContents() {
+        return this.getEntityData().get(DATA_CONTENTS);
+    }
+
+    public void setContents(HotdogContents contents) {
+        this.getEntityData().set(DATA_CONTENTS, contents);
+    }
+
+    public HotdogContents.Mutable getMutable() {
+        return this.getContents().toMutable();
+    }
+
+    public void setMutable(HotdogContents.Mutable mutable) {
+        this.setContents(mutable.toImmutable());
+    }
+
+    public boolean hasDog() {
+        return this.getContents().hasDog();
+    }
+
+    public boolean hasBun() {
+        return this.getContents().hasBun();
     }
 
     public void setCookAmt(float cookAmt) {
-        this.getEntityData().set(DATA_COOK_AMT, Math.clamp(cookAmt, 0F, 3F));
+        this.setMutable(this.getMutable().cookAmt(cookAmt));
+    }
+
+    public void setBunCookAmt(float bunCookAmt) {
+        this.setMutable(this.getMutable().bunCookAmt(bunCookAmt));
+    }
+
+    private void placeFire(@NotNull ServerLevel level) {
+        BlockPos blockPos = this.blockPosition();
+        if (BaseFireBlock.canBePlacedAt(level, blockPos, Direction.DOWN)) {
+            level.setBlock(blockPos, BaseFireBlock.getState(level, blockPos), 11);
+            this.playSound(SoundEvents.FIRECHARGE_USE);
+            level.gameEvent(this, GameEvent.BLOCK_PLACE, blockPos);
+        }
     }
 
     @Override
@@ -153,39 +234,38 @@ public class Hotdog extends Entity {
         if (this.isRemoved()) return true;
 
         if (source.is(DamageTypes.HOT_FLOOR)) {
-            float cookAmt = this.getCookAmt();
-            if (cookAmt < 3F) this.setCookAmt(cookAmt + 0.001F * damage);
-            else if (this.random.nextFloat() > 0.99F) {
-                BlockPos blockPos = this.blockPosition();
-                if (BaseFireBlock.canBePlacedAt(level, blockPos, Direction.DOWN)) {
-                    level.setBlock(blockPos, BaseFireBlock.getState(level, blockPos), 11);
-                    this.playSound(SoundEvents.FIRECHARGE_USE);
-                    level.gameEvent(this, GameEvent.BLOCK_PLACE, blockPos);
-                }
+            HotdogContents contents = this.getContents();
+            if (contents.cookAmt().isPresent()) {
+                float cookAmt = contents.cookAmt().get();
+                if (cookAmt < 3F) {
+                    this.setCookAmt(
+                            cookAmt + 0.001F * damage * (contents.hasBun() ? 0.5F : 1F)
+                    );
+                } else if (this.random.nextFloat() > 0.99F) this.placeFire(level);
+            }
+
+            if (contents.bunCookAmt().isPresent()) {
+                float bunCookAmt = contents.bunCookAmt().get();
+                if (bunCookAmt < 3F) this.setBunCookAmt(bunCookAmt + 0.002F * damage);
+                else if (this.random.nextFloat() > 0.98F) this.placeFire(level);
             }
         } else if (source.is(DamageTypeTags.IS_FIRE)) {
-            this.setCookAmt(3F);
+            if (this.hasDog()) this.setCookAmt(3F);
+            if (this.hasBun()) this.setBunCookAmt(3F);
         } else {
             this.kill(level);
             this.markHurt();
 
             ItemStack drop = this.getItemStack();
             Block.popResource(this.level(), this.blockPosition(), drop);
-            this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
+            this.playTakeSound();
         }
 
         return true;
     }
 
     private ItemStack getItemStack() {
-        ItemStack result = new ItemStack(ModItems.HOTDOG);
-
-        float cookAmt = this.getCookAmt();
-        if (cookAmt >= 1F && cookAmt <= 2F) cookAmt = 1F;
-        else cookAmt = Mth.floor(cookAmt * 4F) / 4F;
-        result.set(ModComponents.COOK_AMOUNT, cookAmt);
-
-        return result;
+        return this.getContents().getRoundedItemStack();
     }
 
     @Override
@@ -200,16 +280,16 @@ public class Hotdog extends Entity {
 
     @Override
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder entityData) {
-        entityData.define(DATA_COOK_AMT, 0F);
+        entityData.define(DATA_CONTENTS, HotdogContents.DOG);
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull ValueInput input) {
-        this.setCookAmt(input.getFloatOr("CookAmt", 0F));
+        this.setContents(input.read("HotdogContents", HotdogContents.CODEC).orElse(HotdogContents.DOG));
     }
 
     @Override
     protected void addAdditionalSaveData(@NotNull ValueOutput output) {
-        output.putFloat("CookAmt", this.getCookAmt());
+        output.store("HotdogContents", HotdogContents.CODEC, this.getContents());
     }
 }

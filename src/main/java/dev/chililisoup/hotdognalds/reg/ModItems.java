@@ -2,6 +2,7 @@ package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.entity.CondimentDispenser;
+import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.item.HotdogItem;
 import dev.chililisoup.hotdognalds.item.SpawnItem;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
@@ -23,12 +24,16 @@ public final class ModItems {
         HOTDOG = register(
                 "hotdog",
                 HotdogItem::new,
-                new Properties().component(ModComponents.COOK_AMOUNT, 0F)
+                new Properties().component(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG)
         );
         CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> {
             ItemStack cookedHotdog = new ItemStack(HOTDOG);
-            cookedHotdog.set(ModComponents.COOK_AMOUNT, 1F);
+            cookedHotdog.set(ModComponents.HOTDOG_CONTENTS, HotdogContents.dog(1F));
             tab.accept(cookedHotdog);
+
+            ItemStack bun = new ItemStack(HOTDOG);
+            bun.set(ModComponents.HOTDOG_CONTENTS, HotdogContents.BUN);
+            tab.accept(bun);
         });
 
         CONDIMENT_DISPENSER = register(

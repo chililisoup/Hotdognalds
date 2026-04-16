@@ -18,21 +18,21 @@ public class HotdogModel extends EntityModel<HotdogRenderState> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
-        PartDefinition bone = root.addOrReplaceChild(
-                "bone",
+        PartDefinition dog = root.addOrReplaceChild(
+                "dog",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
                         .addBox(-1.0F, -2.0F, -4.0F, 2.0F, 2.0F, 8.0F),
-                PartPose.offset(0.0F, 24.0F, 0.0F)
+                PartPose.ZERO
         );
-        bone.addOrReplaceChild(
+        dog.addOrReplaceChild(
                 "tail_south",
                 CubeListBuilder.create()
                         .texOffs(0, 0)
                         .addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F),
                 PartPose.offsetAndRotation(0.0F, -1.0F, 5.0F, 0.7854F, -0.6109F, -0.5236F)
         );
-        bone.addOrReplaceChild(
+        dog.addOrReplaceChild(
                 "tail_north",
                 CubeListBuilder.create()
                         .texOffs(0, 0)

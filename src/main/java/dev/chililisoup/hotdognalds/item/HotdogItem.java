@@ -14,14 +14,19 @@ public class HotdogItem extends SpawnItem<Hotdog> {
 
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
-        float cookAmt = itemStack.getOrDefault(ModComponents.COOK_AMOUNT, 0F);
-        Component prefix;
-        if (cookAmt <= 0F) prefix = Component.translatable("item.hotdognalds.hotdog.raw");
-        else if (cookAmt < 1F) prefix = Component.translatable("item.hotdognalds.hotdog.rare");
-        else if (cookAmt <= 2F) prefix = Component.translatable("item.hotdognalds.hotdog.cooked");
-        else if (cookAmt < 3F) prefix = Component.translatable("item.hotdognalds.hotdog.burnt");
-        else prefix = Component.translatable("item.hotdognalds.hotdog.congratulation");
+        HotdogContents contents = itemStack.getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG);
+        if (contents.cookAmt().isPresent()) return Component.translatable(
+                "item.hotdognalds.hotdog",
+                getPrefix(contents.cookAmt().get())
+        );
+        return Component.translatable("item.hotdognalds.hotdog.bun");
+    }
 
-        return Component.translatable("item.hotdognalds.hotdog", prefix);
+    private static Component getPrefix(float cookAmt) {
+        if (cookAmt <= 0F) return Component.translatable("item.hotdognalds.hotdog.raw");
+        if (cookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.rare");
+        if (cookAmt <= 2F) return Component.translatable("item.hotdognalds.hotdog.cooked");
+        if (cookAmt < 3F) return Component.translatable("item.hotdognalds.hotdog.burnt");
+        return Component.translatable("item.hotdognalds.hotdog.congratulation");
     }
 }

@@ -1,6 +1,7 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.item.HotdogContents;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
 public final class ModCreativeTabs {
     public static final ResourceKey<CreativeModeTab> MAIN = register("main", () -> {
         ItemStack cookedHotdog = new ItemStack(ModItems.HOTDOG);
-        cookedHotdog.set(ModComponents.COOK_AMOUNT, 1F);
+        cookedHotdog.set(ModComponents.HOTDOG_CONTENTS, HotdogContents.dog(1F));
         return cookedHotdog;
     });
 

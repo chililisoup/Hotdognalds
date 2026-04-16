@@ -1,6 +1,8 @@
 package dev.chililisoup.hotdognalds.client.particle;
 
 import dev.chililisoup.hotdognalds.reg.ModParticles;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.DripParticle;
 import net.minecraft.client.particle.Particle;
@@ -15,6 +17,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
+@Environment(EnvType.CLIENT)
 public class ColoredFallAndLandParticle extends DripParticle.FallAndLandParticle {
     public ColoredFallAndLandParticle(
             final ClientLevel level,

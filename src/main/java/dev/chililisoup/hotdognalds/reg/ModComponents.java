@@ -1,17 +1,16 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.item.HotdogContents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.util.ExtraCodecs;
 
 import java.util.function.UnaryOperator;
 
 public final class ModComponents {
-    public static final DataComponentType<Float> COOK_AMOUNT = register(
-            "cook_amount", b -> b.persistent(ExtraCodecs.floatRange(0.0F, 3.0F)).networkSynchronized(ByteBufCodecs.FLOAT)
+    public static final DataComponentType<HotdogContents> HOTDOG_CONTENTS = register(
+            "hotdog_contents", b -> b.persistent(HotdogContents.CODEC).networkSynchronized(HotdogContents.STREAM_CODEC).cacheEncoding()
     );
 
     private static <T> DataComponentType<T> register(String name, UnaryOperator<DataComponentType.Builder<T>> builder) {
