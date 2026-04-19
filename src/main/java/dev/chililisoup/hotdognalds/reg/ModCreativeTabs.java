@@ -8,15 +8,21 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public final class ModCreativeTabs {
     public static final ResourceKey<CreativeModeTab> MAIN = register("main", () -> {
         ItemStack cookedHotdog = new ItemStack(ModItems.HOTDOG);
-        cookedHotdog.set(ModComponents.HOTDOG_CONTENTS, HotdogContents.dog(1F));
+        cookedHotdog.set(ModComponents.HOTDOG_CONTENTS, new HotdogContents(
+                Optional.of(1F),
+                Optional.of(0F),
+                Optional.of(ARGB.color(2, 0xFCBA03))
+        ));
         return cookedHotdog;
     });
 

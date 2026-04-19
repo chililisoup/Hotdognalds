@@ -2,10 +2,6 @@ package dev.chililisoup.hotdognalds.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
-import dev.chililisoup.hotdognalds.client.model.HotdogBunModel;
-import dev.chililisoup.hotdognalds.client.model.HotdogModel;
-import dev.chililisoup.hotdognalds.client.reg.ModModelLayers;
-import dev.chililisoup.hotdognalds.client.reg.ModSpecialRenderers;
 import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
 import net.fabricmc.api.EnvType;
@@ -25,10 +21,7 @@ public class HotdogSpecialRenderer implements SpecialModelRenderer<DataComponent
     private final BaseHotdogRenderer baseRenderer;
 
     public HotdogSpecialRenderer(SpecialModelRenderer.BakingContext context) {
-        this.baseRenderer = new BaseHotdogRenderer(
-                new HotdogModel(context.entityModelSet().bakeLayer(ModSpecialRenderers.HOTDOG)),
-                new HotdogBunModel(context.entityModelSet().bakeLayer(ModModelLayers.HOTDOG_BUN))
-        );
+        this.baseRenderer = new BaseHotdogRenderer(context.entityModelSet());
     }
 
     @Override

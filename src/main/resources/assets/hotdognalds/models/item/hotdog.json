@@ -1,9 +1,12 @@
 {
+  "textures": {
+    "particle": "minecraft:item/cooked_porkchop"
+  },
   "gui_light": "side",
   "display": {
     "gui": {
       "rotation": [ 30, -45, 0 ],
-      "translation": [ 0, 8, 0 ],
+      "translation": [ 0, 9, 0 ],
       "scale": [ 1.5, 1.5, 1.5 ]
     },
     "ground": {

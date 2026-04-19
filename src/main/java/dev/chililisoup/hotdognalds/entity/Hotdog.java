@@ -7,11 +7,13 @@ import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -140,7 +142,9 @@ public class Hotdog extends Entity {
             HotdogContents handContents = handStack.get(ModComponents.HOTDOG_CONTENTS);
             if (handContents != null && handContents.hasDog() && !handContents.hasBun()) {
                 if (!this.isRemoved() && !player.level().isClientSide()) {
-                    this.setCookAmt(handContents.cookAmt().orElse(0F));
+                    this.setMutable(handContents.toMutable().bunCookAmt(
+                            this.getContents().bunCookAmt().orElse(0F)
+                    ));
                     handStack.consume(1, player);
 
                     this.playPlaceSound();
@@ -217,6 +221,19 @@ public class Hotdog extends Entity {
         this.setMutable(this.getMutable().bunCookAmt(bunCookAmt));
     }
 
+    public void addSauce(int sauceColor) {
+        HotdogContents contents = this.getContents();
+        if (!contents.hasDog()) return;
+
+        int sauceAmount = contents.sauceAmount();
+        this.setMutable(contents.toMutable().sauce(
+                Math.min(sauceAmount + 1, 3),
+                sauceAmount > 0 ?
+                        ARGB.average(sauceColor, contents.sauceColor()) :
+                        sauceColor
+        ));
+    }
+
     private void placeFire(@NotNull ServerLevel level) {
         BlockPos blockPos = this.blockPosition();
         if (BaseFireBlock.canBePlacedAt(level, blockPos, Direction.DOWN)) {
@@ -266,6 +283,11 @@ public class Hotdog extends Entity {
 
     private ItemStack getItemStack() {
         return this.getContents().getRoundedItemStack();
+    }
+
+    @Override
+    protected @NotNull Component getTypeName() {
+        return this.getItemStack().getHoverName();
     }
 
     @Override

@@ -2,6 +2,7 @@ package dev.chililisoup.hotdognalds.client.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.client.model.HotdogBunModel;
+import dev.chililisoup.hotdognalds.client.model.HotdogSauceModel;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 
@@ -10,6 +11,12 @@ public final class ModModelLayers {
             "hotdog",
             "bun",
             HotdogBunModel::createBodyLayer
+    );
+
+    public static final ModelLayerLocation HOTDOG_SAUCE = register(
+            "hotdog",
+            "sauce",
+            HotdogSauceModel::createBodyLayer
     );
 
     private static ModelLayerLocation register(

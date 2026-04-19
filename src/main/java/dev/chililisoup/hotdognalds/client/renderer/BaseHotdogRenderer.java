@@ -4,13 +4,20 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.client.model.HotdogBunModel;
 import dev.chililisoup.hotdognalds.client.model.HotdogModel;
+import dev.chililisoup.hotdognalds.client.model.HotdogSauceModel;
+import dev.chililisoup.hotdognalds.client.reg.ModEntityRenderers;
+import dev.chililisoup.hotdognalds.client.reg.ModModelLayers;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.Model;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
+@Environment(EnvType.CLIENT)
 public final class BaseHotdogRenderer {
     public static final Identifier RAW_TEXTURE = Hotdognalds.id("textures/entity/hotdog_raw.png");
     public static final Identifier COOKED_TEXTURE = Hotdognalds.id("textures/entity/hotdog_cooked.png");
@@ -18,10 +25,12 @@ public final class BaseHotdogRenderer {
 
     final HotdogModel model;
     final HotdogBunModel bunModel;
+    final HotdogSauceModel sauceModel;
 
-    public BaseHotdogRenderer(HotdogModel model, HotdogBunModel bunModel) {
-        this.model = model;
-        this.bunModel = bunModel;
+    public BaseHotdogRenderer(EntityModelSet modelSet) {
+        this.model = new HotdogModel(modelSet.bakeLayer(ModEntityRenderers.HOTDOG_MODEL));
+        this.bunModel = new HotdogBunModel(modelSet.bakeLayer(ModModelLayers.HOTDOG_BUN));
+        this.sauceModel = new HotdogSauceModel(modelSet.bakeLayer(ModModelLayers.HOTDOG_SAUCE));
     }
 
     public void submit(
@@ -40,11 +49,23 @@ public final class BaseHotdogRenderer {
     ) {
         SubmitHelper helper = new SubmitHelper(state, poseStack, submitNodeCollector, overlayCoords);
 
-        if (state.contents.cookAmt().isPresent())
-            this.submitBlendedCookModel(helper, this.model, state.contents.cookAmt().get());
+        boolean hasDog = state.contents.cookAmt().isPresent();
+        if (hasDog) this.submitBlendedCookModel(helper, this.model, state.contents.cookAmt().get());
 
-        if (state.contents.bunCookAmt().isPresent())
-            this.submitBlendedCookModel(helper, this.bunModel, state.contents.bunCookAmt().get());
+        boolean hasBun = state.contents.bunCookAmt().isPresent();
+        if (hasBun) this.submitBlendedCookModel(helper, this.bunModel, state.contents.bunCookAmt().get());
+
+        // Submit red bun for nonsense hotdog contents
+        if (!hasDog && !hasBun) helper.submitColoredTextureModel(this.bunModel, RAW_TEXTURE, 0xFFFF0000);
+
+        int sauceAmount = state.contents.sauceAmount();
+        if (sauceAmount > 0) {
+            Identifier sauceTexture;
+            if (sauceAmount > 2) sauceTexture = BURNT_TEXTURE;
+            else if (sauceAmount > 1) sauceTexture = COOKED_TEXTURE;
+            else sauceTexture = RAW_TEXTURE;
+            helper.submitColoredTextureModel(this.sauceModel, sauceTexture, state.contents.sauceColor());
+        }
     }
 
     private void submitBlendedCookModel(SubmitHelper helper, Model<HotdogRenderState> model, float cookAmt) {
@@ -64,26 +85,16 @@ public final class BaseHotdogRenderer {
             SubmitNodeCollector submitNodeCollector,
             int overlayCoords
     ) {
-        @SuppressWarnings("DataFlowIssue")
         private void submitBlendedTextureModel(
                 Model<HotdogRenderState> model,
                 Identifier texture1,
                 Identifier texture2,
                 float amt
         ) {
-            submitBaseTextureModel(model, texture1);
-            this.submitNodeCollector.order(1).submitModel(
-                    model,
-                    this.state,
-                    this.poseStack,
-                    RenderTypes.entityTranslucent(texture2),
-                    this.state.lightCoords,
-                    this.overlayCoords,
-                    ARGB.color(Math.clamp(Math.round(amt * 255), 0, 255), 0xFFFFFF),
-                    null,
-                    this.state.outlineColor,
-                    null
-            );
+            this.submitBaseTextureModel(model, texture1);
+            this.submitColoredTextureModel(model, texture2, ARGB.color(
+                    Math.clamp(Math.round(amt * 255), 0, 255), 0xFFFFFF
+            ));
         }
 
         @SuppressWarnings("DataFlowIssue")
@@ -95,6 +106,22 @@ public final class BaseHotdogRenderer {
                     texture,
                     this.state.lightCoords,
                     this.overlayCoords,
+                    this.state.outlineColor,
+                    null
+            );
+        }
+
+        @SuppressWarnings("DataFlowIssue")
+        private void submitColoredTextureModel(Model<HotdogRenderState> model, Identifier texture, int color) {
+            this.submitNodeCollector.order(1).submitModel(
+                    model,
+                    this.state,
+                    this.poseStack,
+                    RenderTypes.entityTranslucent(texture),
+                    this.state.lightCoords,
+                    this.overlayCoords,
+                    color,
+                    null,
                     this.state.outlineColor,
                     null
             );

@@ -5,3 +5,4 @@ accessible method net/minecraft/client/particle/DripParticle$FallAndLandParticle
 accessible field net/minecraft/client/particle/Particle gravity F
 accessible method net/minecraft/core/particles/SimpleParticleType <init> (Z)V
 accessible class net/minecraft/client/particle/ParticleResources$SpriteParticleRegistration
+accessible method net/minecraft/core/cauldron/CauldronInteraction$Dispatcher put (Lnet/minecraft/world/item/Item;Lnet/minecraft/core/cauldron/CauldronInteraction;)V

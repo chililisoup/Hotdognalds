@@ -12,7 +12,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
 
@@ -24,16 +23,13 @@ public final class ModItems {
         HOTDOG = register(
                 "hotdog",
                 HotdogItem::new,
-                new Properties().component(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG)
+                new Properties()
+                        .component(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG)
+                        .food(HotdogContents.DOG.getFoodProperties())
         );
         CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> {
-            ItemStack cookedHotdog = new ItemStack(HOTDOG);
-            cookedHotdog.set(ModComponents.HOTDOG_CONTENTS, HotdogContents.dog(1F));
-            tab.accept(cookedHotdog);
-
-            ItemStack bun = new ItemStack(HOTDOG);
-            bun.set(ModComponents.HOTDOG_CONTENTS, HotdogContents.BUN);
-            tab.accept(bun);
+            tab.accept(HotdogContents.dog(1F).getRoundedItemStack());
+            tab.accept(HotdogContents.BUN.getRoundedItemStack());
         });
 
         CONDIMENT_DISPENSER = register(

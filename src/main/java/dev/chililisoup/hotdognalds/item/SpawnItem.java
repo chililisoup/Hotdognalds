@@ -1,5 +1,6 @@
 package dev.chililisoup.hotdognalds.item;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -28,14 +29,18 @@ public class SpawnItem<T extends Entity> extends Item {
 
     @Override
     public @NotNull InteractionResult useOn(final UseOnContext context) {
-        if (context.getClickedFace() != Direction.UP) return InteractionResult.FAIL;
+        if (context.getClickedFace() != Direction.UP) return InteractionResult.PASS;
 
         Level level = context.getLevel();
+        BlockPos blockPos = context.getClickedPos();
+        if (level.getBlockState(blockPos).getCollisionShape(level, blockPos).isEmpty())
+            return InteractionResult.PASS;
+
         Vec3 pos = context.getClickLocation();
         AABB box = this.entityType.getDimensions().makeBoundingBox(pos.x(), pos.y(), pos.z());
 
         if (!level.noCollision(null, box) || !level.getEntities(null, box).isEmpty())
-            return InteractionResult.FAIL;
+            return InteractionResult.PASS;
 
         ItemStack itemStack = context.getItemInHand();
         if (level instanceof ServerLevel serverLevel) {

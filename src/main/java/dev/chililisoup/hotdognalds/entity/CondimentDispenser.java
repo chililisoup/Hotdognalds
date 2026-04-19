@@ -25,6 +25,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,7 @@ import java.util.function.Consumer;
 public class CondimentDispenser extends Entity {
     private static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(CondimentDispenser.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_PUMPING = SynchedEntityData.defineId(CondimentDispenser.class, EntityDataSerializers.BOOLEAN);
-    private static final int DEFAULT_COLOR = -214525;
+    private static final int DEFAULT_COLOR = 0xFFFCBA03;
 
     protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
@@ -100,8 +101,7 @@ public class CondimentDispenser extends Entity {
             this.pumpAmt = Mth.lerp(0.25F, this.pumpAmt, this.isPumping() ? 1F : 0F);
 
             if (this.isPumping()) {
-                Vec3 nozzlePos = this.position()
-                        .add(this.getLookAngle().scale(0.25))
+                Vec3 nozzlePos = this.nozzleFloorPos()
                         .add(0, 0.625 - this.pumpAmt * 0.25, 0);
                 int color = this.getColor();
                 this.level().addParticle(
@@ -114,14 +114,24 @@ public class CondimentDispenser extends Entity {
                         ARGB.blueFloat(color)
                 );
             }
-        } else if (this.pumpingTicks > 0) {
-            if (--this.pumpingTicks == 0) this.setPumping(false);
+        } else if (this.pumpingTicks > 0 && --this.pumpingTicks == 0) {
+            this.level().getEntitiesOfClass(Hotdog.class, AABB.ofSize(
+                    this.nozzleFloorPos().add(0, 0.125, 0),
+                    0.25,
+                    0.25,
+                    0.25
+            )).forEach(hotdog -> hotdog.addSauce(this.getColor()));
+            this.setPumping(false);
         }
     }
 
     @Override
     protected double getDefaultGravity() {
         return 0.08;
+    }
+
+    private Vec3 nozzleFloorPos() {
+        return this.position().add(this.getLookAngle().scale(0.25));
     }
 
     @Override
