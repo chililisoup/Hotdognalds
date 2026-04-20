@@ -17,7 +17,7 @@ public final class ModEntityTypes {
             EntityType.Builder.of(Hotdog::new, MobCategory.MISC)
                     .noLootTable()
                     .noSummon()
-                    .sized(0.3F, 0.2F)
+                    .sized(0.2F, 0.2F)
     );
 
     public static final EntityType<CondimentDispenser> CONDIMENT_DISPENSER = register(

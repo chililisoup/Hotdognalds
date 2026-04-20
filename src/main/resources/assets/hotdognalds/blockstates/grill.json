@@ -1,9 +1,19 @@
 {
   "variants": {
-    "": [
-      {
-        "model": "hotdognalds:block/grill"
-      }
-    ]
+    "facing=east": {
+      "model": "hotdognalds:block/grill",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "hotdognalds:block/grill"
+    },
+    "facing=south": {
+      "model": "hotdognalds:block/grill",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "hotdognalds:block/grill",
+      "y": 270
+    }
   }
 }

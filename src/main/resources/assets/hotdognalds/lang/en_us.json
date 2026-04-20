@@ -1,7 +1,7 @@
 {
   "item.hotdognalds.hotdog": "%s Hotdog",
   "item.hotdognalds.hotdog.raw": "Raw",
-  "item.hotdognalds.hotdog.rare": "Rare",
+  "item.hotdognalds.hotdog.uncooked": "Uncooked",
   "item.hotdognalds.hotdog.cooked": "Cooked",
   "item.hotdognalds.hotdog.well_done": "Well Done",
   "item.hotdognalds.hotdog.congratulation": "Congratulation",

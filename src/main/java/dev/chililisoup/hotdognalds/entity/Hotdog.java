@@ -178,10 +178,8 @@ public class Hotdog extends Entity {
             this.kill(serverLevel);
             this.markHurt();
 
-            if (handStack.isEmpty()) {
-                if (offHand) player.addItem(hotdogStack);
-                else player.setItemInHand(hand, hotdogStack);
-            } else handStack.grow(1);
+            if (handStack.isEmpty()) player.setItemInHand(hand, hotdogStack);
+            else handStack.grow(1);
 
             this.playTakeSound();
         }

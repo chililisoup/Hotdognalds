@@ -3,6 +3,7 @@ package dev.chililisoup.hotdognalds.reg;
 import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.block.GrillBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -11,12 +12,21 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 import java.util.function.Function;
 
 public final class ModBlocks {
-    public static final Block GRILL = register("grill", GrillBlock::new, Properties.of());
+    public static final Block GRILL = register(
+            "grill",
+            GrillBlock::new,
+            Properties.ofFullCopy(Blocks.CAULDRON)
+    );
+
+    static {
+        FlammableBlockRegistry.getDefaultInstance().add(GRILL, 1, 0);
+    }
 
     private static Block register(
             String name,

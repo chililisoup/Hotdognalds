@@ -28,7 +28,7 @@ public class HotdogItem extends SpawnItem<Hotdog> {
 
     private static Component getDogPrefix(float cookAmt) {
         if (cookAmt <= 0F) return Component.translatable("item.hotdognalds.hotdog.raw");
-        if (cookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.rare");
+        if (cookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.uncooked");
         if (cookAmt <= 2F) return Component.translatable("item.hotdognalds.hotdog.cooked");
         if (cookAmt < 3F) return Component.translatable("item.hotdognalds.hotdog.well_done");
         return Component.translatable("item.hotdognalds.hotdog.congratulation");
