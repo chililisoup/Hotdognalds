@@ -12,5 +12,6 @@ public final class HotdognaldsClient implements ClientModInitializer {
         ModEntityRenderers.init();
         ModModelLayers.init();
         ModSpecialRenderers.init();
+        ModBlockEntityRenderers.init();
     }
 }

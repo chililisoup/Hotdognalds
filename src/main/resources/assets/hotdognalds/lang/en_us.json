@@ -15,5 +15,8 @@
   "entity.hotdognalds.hotdog": "Hotdog",
   "entity.hotdognalds.condiment_dispenser": "Condiment Dispenser",
   "block.hotdognalds.grill": "Grill",
+  "lore.hotdognalds.grill": "Can be toggled on\/off by clicking the red light",
+  "block.hotdognalds.crate": "Crate",
+  "lore.hotdognalds.crate": "Creative item dispenser utility/decoration",
   "itemGroup.hotdognalds.main": "Hotdognalds"
 }

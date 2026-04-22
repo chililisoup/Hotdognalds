@@ -1,0 +1,7 @@
+{
+  "parent": "hotdognalds:block/grill",
+  "textures": {
+    "0": "hotdognalds:block/grill_lit",
+    "particle": "hotdognalds:block/grill_lit"
+  }
+}

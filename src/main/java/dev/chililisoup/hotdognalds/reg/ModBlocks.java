@@ -1,6 +1,7 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.block.CrateBlock;
 import dev.chililisoup.hotdognalds.block.GrillBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.MapColor;
 
 import java.util.function.Function;
 
@@ -22,6 +24,19 @@ public final class ModBlocks {
             "grill",
             GrillBlock::new,
             Properties.ofFullCopy(Blocks.CAULDRON)
+    );
+
+    public static final Block CRATE = register(
+            "crate",
+            CrateBlock::new,
+            Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .noOcclusion()
+                    .strength(0.3F)
+                    .isValidSpawn(Blocks::never)
+                    .isRedstoneConductor(Blocks::never)
+                    .isSuffocating(Blocks::never)
+                    .isViewBlocking(Blocks::never)
     );
 
     static {
@@ -33,10 +48,11 @@ public final class ModBlocks {
             Function<Properties, Block> blockFactory,
             Properties properties
     ) {
-        ResourceKey<Block> blockKey = blockKey(name);
+        Identifier id = Hotdognalds.id(name);
+        ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
         Block block = blockFactory.apply(properties.setId(blockKey));
 
-        ResourceKey<Item> itemKey = itemKey(blockKey.identifier());
+        ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
         Item.Properties itemProperties = new Item.Properties()
                 .useBlockDescriptionPrefix()
                 .requiredFeatures(block.requiredFeatures())
@@ -47,14 +63,6 @@ public final class ModBlocks {
         CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> tab.accept(blockItem));
 
         return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
-    }
-
-    private static ResourceKey<Block> blockKey(String name) {
-        return ResourceKey.create(Registries.BLOCK, Hotdognalds.id(name));
-    }
-
-    private static ResourceKey<Item> itemKey(Identifier identifier) {
-        return ResourceKey.create(Registries.ITEM, identifier);
     }
 
     public static void init() {}

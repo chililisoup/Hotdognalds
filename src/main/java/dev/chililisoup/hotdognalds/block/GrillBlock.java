@@ -5,9 +5,12 @@ import dev.chililisoup.hotdognalds.entity.Hotdog;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -18,12 +21,12 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.pathfinder.PathComputationType;
-import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
@@ -75,34 +78,31 @@ public class GrillBlock extends Block {
     }
 
     @Override
-    protected void neighborChanged(
+    protected @NotNull InteractionResult useWithoutItem(
             @NotNull BlockState state,
-            Level level,
+            @NotNull Level level,
             @NotNull BlockPos pos,
-            @NotNull Block block,
-            @Nullable Orientation orientation,
-            boolean movedByPiston
+            @NotNull Player player,
+            @NotNull BlockHitResult hitResult
     ) {
-        if (level.isClientSide()) return;
-        boolean isLit = state.getValue(LIT);
-        if (isLit != level.hasNeighborSignal(pos)) {
-            if (isLit) level.scheduleTick(pos, this, 4);
-            else level.setBlock(pos, state.cycle(LIT), 2);
-        }
-    }
+        if (hitResult.getDirection() != state.getValue(FACING))
+            return InteractionResult.PASS;
 
-    @Override
-    protected void tick(BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
-        if (state.getValue(LIT) && !level.hasNeighborSignal(pos))
-            level.setBlock(pos, state.cycle(LIT), 2);
-    }
+        Vec3 hitPos = hitResult.getLocation().subtract(new Vec3(pos));
+        if (hitPos.y < 0.1875 || hitPos.y > 0.625)
+            return InteractionResult.PASS;
 
+        boolean litAfter = !state.getValue(LIT);
+        level.setBlock(pos, state.setValue(LIT, litAfter), Block.UPDATE_CLIENTS);
+        level.playSound(player, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3F, litAfter ? 0.6F : 0.5F);
+
+        return InteractionResult.SUCCESS;
+    }
 
     @Override
     public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState onState, @NotNull Entity entity) {
         if (onState.getValue(LIT)
-                && entity.getY() % 1.0 < 0.01
-                && !entity.isSteppingCarefully()
+                && Math.abs(entity.getY() % 1.0) < 0.01
                 && (entity instanceof LivingEntity || entity instanceof Hotdog)
         ) {
             if (level instanceof ServerLevel serverLevel)

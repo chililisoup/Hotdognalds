@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=east": {
+    "facing=east,lit=false": {
       "model": "hotdognalds:block/grill",
       "y": 90
     },
-    "facing=north": {
+    "facing=north,lit=false": {
       "model": "hotdognalds:block/grill"
     },
-    "facing=south": {
+    "facing=south,lit=false": {
       "model": "hotdognalds:block/grill",
       "y": 180
     },
-    "facing=west": {
+    "facing=west,lit=false": {
       "model": "hotdognalds:block/grill",
+      "y": 270
+    },
+    "facing=east,lit=true": {
+      "model": "hotdognalds:block/grill_lit",
+      "y": 90
+    },
+    "facing=north,lit=true": {
+      "model": "hotdognalds:block/grill_lit"
+    },
+    "facing=south,lit=true": {
+      "model": "hotdognalds:block/grill_lit",
+      "y": 180
+    },
+    "facing=west,lit=true": {
+      "model": "hotdognalds:block/grill_lit",
       "y": 270
     }
   }

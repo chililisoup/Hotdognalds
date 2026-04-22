@@ -43,7 +43,7 @@ public final class ModItems {
             Function<Properties, Item> itemFactory,
             Properties properties
     ) {
-        ResourceKey<Item> itemKey = itemKey(name);
+        ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, Hotdognalds.id(name));
         Item item = itemFactory.apply(properties.setId(itemKey));
         CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> tab.accept(item));
         return Registry.register(BuiltInRegistries.ITEM, itemKey, item);
@@ -54,10 +54,6 @@ public final class ModItems {
             Function<Properties, Item> itemFactory
     ) {
         return register(name, itemFactory, new Properties());
-    }
-
-    private static ResourceKey<Item> itemKey(String name) {
-        return ResourceKey.create(Registries.ITEM, Hotdognalds.id(name));
     }
 
     public static void init() {}
