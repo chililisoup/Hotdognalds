@@ -12,11 +12,14 @@
   "item.hotdognalds.hotdog.bun.tip.burnt": "Burnt",
   "item.hotdognalds.hotdog.bun.tip.blackened": "Rock-Hard Blackened",
   "item.hotdognalds.condiment_dispenser": "Condiment Dispenser",
+  "item.hotdognalds.cup": "Cup",
+  "item.hotdognalds.tip.invulnerable": "Invulnerable",
   "entity.hotdognalds.hotdog": "Hotdog",
   "entity.hotdognalds.condiment_dispenser": "Condiment Dispenser",
+  "entity.hotdognalds.cup": "Cup",
   "block.hotdognalds.grill": "Grill",
-  "lore.hotdognalds.grill": "Can be toggled on\/off by clicking the red light",
+  "lore.hotdognalds.grill": "Can be toggled on/off by clicking the red light",
   "block.hotdognalds.crate": "Crate",
   "lore.hotdognalds.crate": "Creative item dispenser utility/decoration",
-  "itemGroup.hotdognalds.main": "Hotdognalds"
+  "itemGroup.hotdognalds.main": "Hotdognald's"
 }

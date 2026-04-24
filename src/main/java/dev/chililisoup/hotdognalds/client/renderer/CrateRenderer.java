@@ -51,10 +51,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity, Crat
 
         poseStack.translate(0.5F, 0.01F, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(state.yRot));
-        poseStack.translate(-0.5F, 0F, -0.5F);
-
-        AABB box = state.itemStackRenderState.getModelBoundingBox();
-        poseStack.translate(0.0F, (float) -box.minY / 4F, 0.0F);
+        poseStack.translate(-0.5F, state.yOffset, -0.5F);
 
         poseStack.scale(state.scale, state.scale, state.scale);
 
@@ -86,7 +83,7 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity, Crat
     ) {
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
-        ItemStack itemStack = blockEntity.getItemStack();
+        ItemStack itemStack = blockEntity.getTheItem();
         if (!itemStack.isEmpty()) {
             ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
             this.itemModelResolver.updateForTopItem(
@@ -106,8 +103,11 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity, Crat
                 default -> Direction.WEST;
             }).toYRot();
 
-            HotdogContents contents = itemStack.get(ModComponents.HOTDOG_CONTENTS);
-            if (contents != null) {
+
+            AABB box = state.itemStackRenderState.getModelBoundingBox();
+            state.yOffset = (float) -box.minY / 4F;
+
+            if (itemStack.get(ModComponents.HOTDOG_CONTENTS) instanceof HotdogContents contents) {
                 state.yRot += 90F;
                 if (contents.hasDog()) {
                     state.scale = 0.5F;
@@ -117,12 +117,23 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity, Crat
                     state.zCount = 4;
                 }
                 state.xCount = 2;
-            } else {
-                state.scale = 0.25F;
-                AABB box = itemStackRenderState.getModelBoundingBox();
-                state.xCount = Mth.clamp(Mth.floor(3.0 / box.getXsize()), 1, 4);
-                state.zCount = Mth.clamp(Mth.floor(3.0 / box.getZsize()), 1, 4);
+
+                return;
             }
+
+            if (itemStack.has(ModComponents.CUP_CONTENTS)) {
+                state.yRot += 90F;
+                state.yOffset += 0.375F;
+                state.scale = 0.67F;
+                state.zCount = 4;
+                state.xCount = 4;
+
+                return;
+            }
+
+            state.scale = 0.25F;
+            state.xCount = Mth.clamp(Mth.floor(3.0 / box.getXsize()), 1, 4);
+            state.zCount = Mth.clamp(Mth.floor(3.0 / box.getZsize()), 1, 4);
         }
     }
 

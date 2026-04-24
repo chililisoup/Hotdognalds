@@ -17,10 +17,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.ticks.ContainerSingleItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CrateBlockEntity extends BlockEntity implements ItemOwner {
+public class CrateBlockEntity extends BlockEntity implements ContainerSingleItem.BlockContainerSingleItem, ItemOwner {
     private ItemStack itemStack = ItemStack.EMPTY;
 
     public CrateBlockEntity(BlockPos worldPosition, BlockState blockState) {
@@ -51,8 +52,14 @@ public class CrateBlockEntity extends BlockEntity implements ItemOwner {
         return tag;
     }
 
-    public ItemStack getItemStack() {
+    @Override
+    public @NotNull ItemStack getTheItem() {
         return this.itemStack.copy();
+    }
+
+    @Override
+    public void setTheItem(@NotNull ItemStack itemStack) {
+        // Only want it set by creative players
     }
 
     public void setItemStack(ItemStack itemStack) {
@@ -93,5 +100,10 @@ public class CrateBlockEntity extends BlockEntity implements ItemOwner {
     @Override
     public float getVisualRotationYInDegrees() {
         return this.getBlockState().getValue(CrateBlock.FACING).getOpposite().toYRot();
+    }
+
+    @Override
+    public @NotNull BlockEntity getContainerBlockEntity() {
+        return this;
     }
 }

@@ -73,10 +73,13 @@ public class CrateBlock extends BaseEntityBlock {
         if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity))
             return InteractionResult.PASS;
 
-        ItemStack crateStack = crateBlockEntity.getItemStack();
+        ItemStack crateStack = crateBlockEntity.getTheItem();
 
         if (player.hasInfiniteMaterials() && player.isShiftKeyDown()) {
-            if (!level.isClientSide()) crateBlockEntity.removeItemStack();
+            if (!level.isClientSide()) {
+                crateBlockEntity.removeItemStack();
+                level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.5F, 1.0F);
+            }
             return InteractionResult.SUCCESS_SERVER;
         }
 
@@ -107,11 +110,14 @@ public class CrateBlock extends BaseEntityBlock {
         if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity))
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        ItemStack crateStack = crateBlockEntity.getItemStack();
+        ItemStack crateStack = crateBlockEntity.getTheItem();
         if (!crateStack.isEmpty())
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        if (!level.isClientSide()) crateBlockEntity.setItemStack(itemStack);
+        if (!level.isClientSide()) {
+            crateBlockEntity.setItemStack(itemStack);
+            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.5F, 1.0F);
+        }
         return InteractionResult.SUCCESS_SERVER;
     }
 

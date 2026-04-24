@@ -1,7 +1,10 @@
 package dev.chililisoup.hotdognalds.item;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -10,12 +13,17 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Consumer;
 
 public class SpawnItem<T extends Entity> extends Item {
     private final EntityType<T> entityType;
@@ -40,7 +48,7 @@ public class SpawnItem<T extends Entity> extends Item {
         AABB box = this.entityType.getDimensions().makeBoundingBox(pos.x(), pos.y(), pos.z());
 
         if (!level.noCollision(null, box) || !level.getEntities(null, box).isEmpty())
-            return InteractionResult.PASS;
+            return InteractionResult.FAIL;
 
         ItemStack itemStack = context.getItemInHand();
         if (level instanceof ServerLevel serverLevel) {
@@ -58,6 +66,24 @@ public class SpawnItem<T extends Entity> extends Item {
 
         itemStack.shrink(1);
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void appendHoverText(
+            @NotNull ItemStack itemStack,
+            @NotNull Item.TooltipContext context,
+            @NotNull TooltipDisplay display,
+            @NotNull Consumer<Component> builder,
+            @NotNull TooltipFlag tooltipFlag
+    ) {
+        TypedEntityData<?> entityData = itemStack.get(DataComponents.ENTITY_DATA);
+        if (entityData == null) return;
+        if (entityData.copyTagWithoutId().getBooleanOr("Invulnerable", false)) {
+            builder.accept(Component
+                    .translatable("item.hotdognalds.tip.invulnerable")
+                    .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
+            );
+        }
     }
 
     public interface EntityCreator<T extends Entity> {

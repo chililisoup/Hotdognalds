@@ -7,15 +7,14 @@ import dev.chililisoup.hotdognalds.client.model.HotdogModel;
 import dev.chililisoup.hotdognalds.client.model.HotdogSauceModel;
 import dev.chililisoup.hotdognalds.client.reg.ModEntityRenderers;
 import dev.chililisoup.hotdognalds.client.reg.ModModelLayers;
+import dev.chililisoup.hotdognalds.client.renderer.util.SubmitHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 
 @Environment(EnvType.CLIENT)
 public final class BaseHotdogRenderer {
@@ -28,7 +27,7 @@ public final class BaseHotdogRenderer {
     final HotdogSauceModel sauceModel;
 
     public BaseHotdogRenderer(EntityModelSet modelSet) {
-        this.model = new HotdogModel(modelSet.bakeLayer(ModEntityRenderers.HOTDOG_MODEL));
+        this.model = new HotdogModel(modelSet.bakeLayer(ModEntityRenderers.HOTDOG));
         this.bunModel = new HotdogBunModel(modelSet.bakeLayer(ModModelLayers.HOTDOG_BUN));
         this.sauceModel = new HotdogSauceModel(modelSet.bakeLayer(ModModelLayers.HOTDOG_SAUCE));
     }
@@ -47,7 +46,7 @@ public final class BaseHotdogRenderer {
             SubmitNodeCollector submitNodeCollector,
             int overlayCoords
     ) {
-        SubmitHelper helper = new SubmitHelper(state, poseStack, submitNodeCollector, overlayCoords);
+        SubmitHelper<HotdogRenderState> helper = new SubmitHelper<>(state, poseStack, submitNodeCollector, overlayCoords);
 
         boolean hasDog = state.contents.cookAmt().isPresent();
         if (hasDog) this.submitBlendedCookModel(helper, this.model, state.contents.cookAmt().get());
@@ -68,7 +67,7 @@ public final class BaseHotdogRenderer {
         }
     }
 
-    private void submitBlendedCookModel(SubmitHelper helper, Model<HotdogRenderState> model, float cookAmt) {
+    private void submitBlendedCookModel(SubmitHelper<HotdogRenderState> helper, Model<HotdogRenderState> model, float cookAmt) {
         if (cookAmt < 1F)
             helper.submitBlendedTextureModel(model, RAW_TEXTURE, COOKED_TEXTURE, cookAmt);
         else if (cookAmt <= 2F)
@@ -77,54 +76,5 @@ public final class BaseHotdogRenderer {
             helper.submitBlendedTextureModel(model, COOKED_TEXTURE, BURNT_TEXTURE, cookAmt - 2F);
         else
             helper.submitBaseTextureModel(model, BURNT_TEXTURE);
-    }
-
-    private record SubmitHelper(
-            HotdogRenderState state,
-            PoseStack poseStack,
-            SubmitNodeCollector submitNodeCollector,
-            int overlayCoords
-    ) {
-        private void submitBlendedTextureModel(
-                Model<HotdogRenderState> model,
-                Identifier texture1,
-                Identifier texture2,
-                float amt
-        ) {
-            this.submitBaseTextureModel(model, texture1);
-            this.submitColoredTextureModel(model, texture2, ARGB.color(
-                    Math.clamp(Math.round(amt * 255), 0, 255), 0xFFFFFF
-            ));
-        }
-
-        @SuppressWarnings("DataFlowIssue")
-        private void submitBaseTextureModel(Model<HotdogRenderState> model, Identifier texture) {
-            this.submitNodeCollector.submitModel(
-                    model,
-                    this.state,
-                    this.poseStack,
-                    texture,
-                    this.state.lightCoords,
-                    this.overlayCoords,
-                    this.state.outlineColor,
-                    null
-            );
-        }
-
-        @SuppressWarnings("DataFlowIssue")
-        private void submitColoredTextureModel(Model<HotdogRenderState> model, Identifier texture, int color) {
-            this.submitNodeCollector.order(1).submitModel(
-                    model,
-                    this.state,
-                    this.poseStack,
-                    RenderTypes.entityTranslucent(texture),
-                    this.state.lightCoords,
-                    this.overlayCoords,
-                    color,
-                    null,
-                    this.state.outlineColor,
-                    null
-            );
-        }
     }
 }

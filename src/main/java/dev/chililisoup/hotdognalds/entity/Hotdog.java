@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
 
-public class Hotdog extends Entity {
+public class Hotdog extends Entity implements CondimentCollector {
     private static final EntityDataAccessor<HotdogContents> DATA_CONTENTS = SynchedEntityData.defineId(
             Hotdog.class, ModEntityDataSerializers.HOTDOG_CONTENTS
     );
@@ -161,7 +161,7 @@ public class Hotdog extends Entity {
                     if (handStack.isEmpty()) {
                         if (offHand) player.addItem(hotdogStack);
                         else player.setItemInHand(hand, hotdogStack);
-                    } else handStack.grow(1);
+                    } else player.addItem(hotdogStack);
 
                     this.playTakeSound();
                 }
@@ -179,7 +179,7 @@ public class Hotdog extends Entity {
             this.markHurt();
 
             if (handStack.isEmpty()) player.setItemInHand(hand, hotdogStack);
-            else handStack.grow(1);
+            else player.addItem(hotdogStack);
 
             this.playTakeSound();
         }
@@ -219,7 +219,8 @@ public class Hotdog extends Entity {
         this.setMutable(this.getMutable().bunCookAmt(bunCookAmt));
     }
 
-    public void addSauce(int sauceColor) {
+    @Override
+    public void collectCondiment(int color) {
         HotdogContents contents = this.getContents();
         if (!contents.hasDog()) return;
 
@@ -227,8 +228,8 @@ public class Hotdog extends Entity {
         this.setMutable(contents.toMutable().sauce(
                 Math.min(sauceAmount + 1, 3),
                 sauceAmount > 0 ?
-                        ARGB.average(sauceColor, contents.sauceColor()) :
-                        sauceColor
+                        ARGB.average(color, contents.sauceColor()) :
+                        color
         ));
     }
 
@@ -271,8 +272,10 @@ public class Hotdog extends Entity {
             this.kill(level);
             this.markHurt();
 
-            ItemStack drop = this.getItemStack();
-            Block.popResource(this.level(), this.blockPosition(), drop);
+            if (!source.isCreativePlayer()) {
+                ItemStack drop = this.getItemStack();
+                Block.popResource(this.level(), this.blockPosition(), drop);
+            }
             this.playTakeSound();
         }
 

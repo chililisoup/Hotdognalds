@@ -27,7 +27,7 @@ public class CondimentDispenserRenderer extends EntityRenderer<CondimentDispense
 
     public CondimentDispenserRenderer(EntityRendererProvider.Context context) {
         super(context);
-        this.model = new CondimentDispenserModel(context.bakeLayer(ModEntityRenderers.CONDIMENT_DISPENSER_MODEL));
+        this.model = new CondimentDispenserModel(context.bakeLayer(ModEntityRenderers.CONDIMENT_DISPENSER));
     }
 
     @SuppressWarnings("DataFlowIssue")

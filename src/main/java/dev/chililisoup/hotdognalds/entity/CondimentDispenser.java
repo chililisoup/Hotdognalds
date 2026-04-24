@@ -43,7 +43,7 @@ public class CondimentDispenser extends Entity {
     private float pumpAmt = 0F;
     private int pumpingTicks = 0;
 
-    public CondimentDispenser(EntityType<?> type, Level level) {
+    public CondimentDispenser(EntityType<CondimentDispenser> type, Level level) {
         super(type, level);
     }
 
@@ -115,12 +115,17 @@ public class CondimentDispenser extends Entity {
                 );
             }
         } else if (this.pumpingTicks > 0 && --this.pumpingTicks == 0) {
-            this.level().getEntitiesOfClass(Hotdog.class, AABB.ofSize(
-                    this.nozzleFloorPos().add(0, 0.125, 0),
-                    0.25,
-                    0.25,
-                    0.25
-            )).forEach(hotdog -> hotdog.addSauce(this.getColor()));
+            int color = ARGB.opaque(this.getColor());
+            this.level().getEntities(
+                    (Entity) null,
+                    AABB.ofSize(
+                            this.nozzleFloorPos().add(0, 0.125, 0),
+                            0.25,
+                            0.25,
+                            0.25
+                    ),
+                    entity -> entity instanceof CondimentCollector
+            ).forEach(entity -> ((CondimentCollector) entity).collectCondiment(color));
             this.setPumping(false);
         }
     }
@@ -178,8 +183,10 @@ public class CondimentDispenser extends Entity {
         this.kill(level);
         this.markHurt();
 
-        ItemStack drop = this.getItemStack();
-        Block.popResource(this.level(), this.blockPosition(), drop);
+        if (!source.isCreativePlayer()) {
+            ItemStack drop = this.getItemStack();
+            Block.popResource(this.level(), this.blockPosition(), drop);
+        }
         this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
 
         return true;

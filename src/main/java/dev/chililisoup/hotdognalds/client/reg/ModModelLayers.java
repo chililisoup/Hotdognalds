@@ -1,6 +1,7 @@
 package dev.chililisoup.hotdognalds.client.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.client.model.CupDrinkModel;
 import dev.chililisoup.hotdognalds.client.model.HotdogBunModel;
 import dev.chililisoup.hotdognalds.client.model.HotdogSauceModel;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
@@ -17,6 +18,12 @@ public final class ModModelLayers {
             "hotdog",
             "sauce",
             HotdogSauceModel::createBodyLayer
+    );
+
+    public static final ModelLayerLocation CUP_DRINK = register(
+            "cup",
+            "drink",
+            CupDrinkModel::createBodyLayer
     );
 
     private static ModelLayerLocation register(
