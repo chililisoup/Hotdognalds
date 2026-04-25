@@ -13,6 +13,7 @@
   "item.hotdognalds.hotdog.bun.tip.blackened": "Rock-Hard Blackened",
   "item.hotdognalds.condiment_dispenser": "Condiment Dispenser",
   "item.hotdognalds.cup": "Cup",
+  "item.hotdognalds.tip.sneak_to_place": "Sneak to place",
   "item.hotdognalds.tip.invulnerable": "Invulnerable",
   "entity.hotdognalds.hotdog": "Hotdog",
   "entity.hotdognalds.condiment_dispenser": "Condiment Dispenser",
@@ -22,5 +23,6 @@
   "block.hotdognalds.crate": "Crate",
   "lore.hotdognalds.crate": "Creative item dispenser utility/decoration",
   "block.hotdognalds.soda_fountain": "Soda Fountain",
+  "block.hotdognalds.counter": "Counter",
   "itemGroup.hotdognalds.main": "Hotdognald's"
 }

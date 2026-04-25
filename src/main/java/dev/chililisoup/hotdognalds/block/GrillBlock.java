@@ -63,8 +63,7 @@ public class GrillBlock extends Block {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection().getOpposite())
-                .setValue(LIT, context.getLevel().hasNeighborSignal(context.getClickedPos()));
+                .setValue(FACING, context.getHorizontalDirection().getOpposite());
     }
 
     @Override

@@ -1,0 +1,97 @@
+{
+  "multipart": [
+    { "apply": { "model": "hotdognalds:block/counter_top" } },
+
+
+
+    {
+      "when": { "facing": "east", "shape": "inner_left" },
+      "apply": { "model": "hotdognalds:block/counter_inner", "uvlock": true, "y": 90 }
+    },
+    {
+      "when": { "facing": "east", "shape": "inner_right" },
+      "apply": { "model": "hotdognalds:block/counter_inner", "uvlock": true, "y": 180 }
+    },
+    {
+      "when": { "facing": "east", "shape": "outer_left" },
+      "apply": { "model": "hotdognalds:block/counter_outer", "uvlock": true, "y": 90 }
+    },
+    {
+      "when": { "facing": "east", "shape": "outer_right" },
+      "apply": { "model": "hotdognalds:block/counter_outer", "uvlock": true, "y": 180 }
+    },
+    {
+      "when": { "facing": "east", "shape": "straight" },
+      "apply": { "model": "hotdognalds:block/counter", "uvlock": true, "y": 90 }
+    },
+
+
+
+    {
+      "when": { "facing": "north", "shape": "inner_left" },
+      "apply": { "model": "hotdognalds:block/counter_inner" }
+    },
+    {
+      "when": { "facing": "north", "shape": "inner_right" },
+      "apply": { "model": "hotdognalds:block/counter_inner", "uvlock": true, "y": 90 }
+    },
+    {
+      "when": { "facing": "north", "shape": "outer_left" },
+      "apply": { "model": "hotdognalds:block/counter_outer" }
+    },
+    {
+      "when": { "facing": "north", "shape": "outer_right" },
+      "apply": { "model": "hotdognalds:block/counter_outer", "uvlock": true, "y": 90 }
+    },
+    {
+      "when": { "facing": "north", "shape": "straight" },
+      "apply": { "model": "hotdognalds:block/counter" }
+    },
+
+
+
+    {
+      "when": { "facing": "south", "shape": "inner_left" },
+      "apply": { "model": "hotdognalds:block/counter_inner", "uvlock": true, "y": 180 }
+    },
+    {
+      "when": { "facing": "south", "shape": "inner_right" },
+      "apply": { "model": "hotdognalds:block/counter_inner", "uvlock": true, "y": 270 }
+    },
+    {
+      "when": { "facing": "south", "shape": "outer_left" },
+      "apply": { "model": "hotdognalds:block/counter_outer", "uvlock": true, "y": 180 }
+    },
+    {
+      "when": { "facing": "south", "shape": "outer_right" },
+      "apply": { "model": "hotdognalds:block/counter_outer", "uvlock": true, "y": 270 }
+    },
+    {
+      "when": { "facing": "south", "shape": "straight" },
+      "apply": { "model": "hotdognalds:block/counter", "uvlock": true, "y": 180 }
+    },
+
+
+
+    {
+      "when": { "facing": "west", "shape": "inner_left" },
+      "apply": { "model": "hotdognalds:block/counter_inner", "uvlock": true, "y": 270 }
+    },
+    {
+      "when": { "facing": "west", "shape": "inner_right" },
+      "apply": { "model": "hotdognalds:block/counter_inner" }
+    },
+    {
+      "when": { "facing": "west", "shape": "outer_left" },
+      "apply": { "model": "hotdognalds:block/counter_outer", "uvlock": true, "y": 270 }
+    },
+    {
+      "when": { "facing": "west", "shape": "outer_right" },
+      "apply": { "model": "hotdognalds:block/counter_outer" }
+    },
+    {
+      "when": { "facing": "west", "shape": "straight" },
+      "apply": { "model": "hotdognalds:block/counter", "uvlock": true, "y": 270 }
+    }
+  ]
+}

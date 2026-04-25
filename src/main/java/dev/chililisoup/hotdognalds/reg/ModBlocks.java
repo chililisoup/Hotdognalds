@@ -1,6 +1,7 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import dev.chililisoup.hotdognalds.block.CounterBlock;
 import dev.chililisoup.hotdognalds.block.CrateBlock;
 import dev.chililisoup.hotdognalds.block.GrillBlock;
 import dev.chililisoup.hotdognalds.block.SodaFountainBlock;
@@ -24,7 +25,10 @@ public final class ModBlocks {
     public static final Block GRILL = register(
             "grill",
             GrillBlock::new,
-            Properties.ofFullCopy(Blocks.CAULDRON)
+            Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0F)
     );
 
     public static final Block CRATE = register(
@@ -43,7 +47,13 @@ public final class ModBlocks {
     public static final Block SODA_FOUNTAIN = register(
             "soda_fountain",
             SodaFountainBlock::new,
-            Properties.ofFullCopy(Blocks.CAULDRON)
+            Properties.ofFullCopy(GRILL)
+    );
+
+    public static final Block COUNTER = register(
+            "counter",
+            CounterBlock::new,
+            Properties.ofFullCopy(GRILL)
     );
 
     static {

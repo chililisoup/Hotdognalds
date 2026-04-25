@@ -28,16 +28,26 @@ import java.util.function.Consumer;
 public class SpawnItem<T extends Entity> extends Item {
     private final EntityType<T> entityType;
     private final EntityCreator<T> entityCreator;
+    private final boolean requireSneakToPlace;
 
-    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator) {
+    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator, boolean requireSneakToPlace) {
         super(properties);
         this.entityType = entityType;
         this.entityCreator = entityCreator;
+        this.requireSneakToPlace = requireSneakToPlace;
+    }
+
+    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator) {
+        this(properties, entityType, entityCreator, false);
     }
 
     @Override
     public @NotNull InteractionResult useOn(final UseOnContext context) {
         if (context.getClickedFace() != Direction.UP) return InteractionResult.PASS;
+
+        Player player = context.getPlayer();
+        if (this.requireSneakToPlace && (player == null || !player.isShiftKeyDown()))
+            return InteractionResult.PASS;
 
         Level level = context.getLevel();
         BlockPos blockPos = context.getClickedPos();
@@ -58,7 +68,7 @@ public class SpawnItem<T extends Entity> extends Item {
                     context.getRotation() + 180F,
                     EntitySpawnReason.SPAWN_ITEM_USE,
                     itemStack,
-                    context.getPlayer()
+                    player
             );
             if (entity == null) return InteractionResult.FAIL;
             serverLevel.addFreshEntityWithPassengers(entity);
@@ -76,6 +86,11 @@ public class SpawnItem<T extends Entity> extends Item {
             @NotNull Consumer<Component> builder,
             @NotNull TooltipFlag tooltipFlag
     ) {
+        if (this.requireSneakToPlace) builder.accept(Component
+                .translatable("item.hotdognalds.tip.sneak_to_place")
+                .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
+        );
+
         TypedEntityData<?> entityData = itemStack.get(DataComponents.ENTITY_DATA);
         if (entityData == null) return;
         if (entityData.copyTagWithoutId().getBooleanOr("Invulnerable", false)) {

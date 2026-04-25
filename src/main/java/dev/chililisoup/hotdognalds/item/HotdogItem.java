@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class HotdogItem extends SpawnItem<Hotdog> {
     public HotdogItem(Properties properties) {
-        super(properties, ModEntityTypes.HOTDOG, Hotdog::create);
+        super(properties, ModEntityTypes.HOTDOG, Hotdog::create, true);
     }
 
     @Override
