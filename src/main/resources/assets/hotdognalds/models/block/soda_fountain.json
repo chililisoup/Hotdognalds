@@ -1,0 +1,187 @@
+{
+  "format_version": "1.21.11",
+  "credit": "Made with Blockbench",
+  "parent": "block/block",
+  "textures": {
+    "dispenser": "hotdognalds:block/soda_fountain_dispenser",
+    "drain": "hotdognalds:block/soda_fountain_drain",
+    "body": "hotdognalds:block/soda_fountain_body",
+    "particle": "hotdognalds:block/soda_fountain_body"
+  },
+  "elements": [
+    {
+      "name": "drain",
+      "from": [0, 0, 0],
+      "to": [16, 2, 5],
+      "faces": {
+        "north": {"uv": [0, 5, 16, 7], "texture": "#drain", "cullface": "north"},
+        "east": {"uv": [5, 12, 10, 14], "texture": "#drain", "cullface": "east"},
+        "west": {"uv": [0, 12, 5, 14], "texture": "#drain", "cullface": "west"},
+        "up": {"uv": [0, 0, 16, 5], "texture": "#drain"},
+        "down": {"uv": [0, 7, 16, 12], "texture": "#drain", "cullface": "down"}
+      }
+    },
+    {
+      "name": "body",
+      "from": [0, 0, 5],
+      "to": [16, 16, 16],
+      "rotation": {"angle": 0, "axis": "y", "origin": [0, 0, 5]},
+      "faces": {
+        "north": {"uv": [0, 5.5, 8, 13.5], "texture": "#body"},
+        "east": {"uv": [8, 5.5, 13.5, 13.5], "texture": "#body", "cullface": "east"},
+        "south": {"uv": [0, 5.5, 8, 13.5], "texture": "#body", "cullface": "south"},
+        "west": {"uv": [8, 5.5, 13.5, 13.5], "texture": "#body", "cullface": "west"},
+        "up": {"uv": [8, 5.5, 0, 0], "texture": "#body", "cullface": "up"},
+        "down": {"uv": [16, 0, 8, 5.5], "texture": "#body", "cullface": "down"}
+      }
+    },
+    {
+      "name": "base",
+      "from": [12.5, 12, 0],
+      "to": [15.5, 16, 5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [14, 14, 5]},
+      "faces": {
+        "north": {"uv": [0, 12, 3, 16], "texture": "#dispenser", "cullface": "north"},
+        "east": {"uv": [6, 0, 11, 4], "texture": "#dispenser"},
+        "west": {"uv": [11, 0, 16, 4], "texture": "#dispenser"},
+        "up": {"uv": [3, 5, 0, 0], "texture": "#dispenser", "cullface": "up"},
+        "down": {"uv": [3, 5, 6, 0], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_outside",
+      "from": [13, 10, 1],
+      "to": [15, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [14, 12, 2]},
+      "faces": {
+        "north": {"uv": [3, 8, 5, 10], "texture": "#dispenser"},
+        "east": {"uv": [1, 8, 3, 10], "texture": "#dispenser"},
+        "south": {"uv": [7, 8, 9, 10], "texture": "#dispenser"},
+        "west": {"uv": [5, 8, 7, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_inside",
+      "from": [15, 10, 1],
+      "to": [13, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [14, 12, 2]},
+      "faces": {
+        "north": {"uv": [5, 8, 3, 10], "texture": "#dispenser"},
+        "east": {"uv": [7, 8, 5, 10], "texture": "#dispenser"},
+        "south": {"uv": [9, 8, 7, 10], "texture": "#dispenser"},
+        "west": {"uv": [3, 8, 1, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "base",
+      "from": [8.5, 12, 0],
+      "to": [11.5, 16, 5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [10, 14, 5]},
+      "faces": {
+        "north": {"uv": [4, 12, 7, 16], "texture": "#dispenser", "cullface": "north"},
+        "east": {"uv": [6, 0, 11, 4], "texture": "#dispenser"},
+        "west": {"uv": [11, 0, 16, 4], "texture": "#dispenser"},
+        "up": {"uv": [3, 5, 0, 0], "texture": "#dispenser", "cullface": "up"},
+        "down": {"uv": [3, 5, 6, 0], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_outside",
+      "from": [9, 10, 1],
+      "to": [11, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [10, 12, 2]},
+      "faces": {
+        "north": {"uv": [3, 8, 5, 10], "texture": "#dispenser"},
+        "east": {"uv": [1, 8, 3, 10], "texture": "#dispenser"},
+        "south": {"uv": [7, 8, 9, 10], "texture": "#dispenser"},
+        "west": {"uv": [5, 8, 7, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_inside",
+      "from": [11, 10, 1],
+      "to": [9, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [10, 12, 2]},
+      "faces": {
+        "north": {"uv": [5, 8, 3, 10], "texture": "#dispenser"},
+        "east": {"uv": [7, 8, 5, 10], "texture": "#dispenser"},
+        "south": {"uv": [9, 8, 7, 10], "texture": "#dispenser"},
+        "west": {"uv": [3, 8, 1, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "base",
+      "from": [4.5, 12, 0],
+      "to": [7.5, 16, 5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [6, 14, 5]},
+      "faces": {
+        "north": {"uv": [8, 12, 11, 16], "texture": "#dispenser", "cullface": "north"},
+        "east": {"uv": [6, 0, 11, 4], "texture": "#dispenser"},
+        "west": {"uv": [11, 0, 16, 4], "texture": "#dispenser"},
+        "up": {"uv": [3, 5, 0, 0], "texture": "#dispenser", "cullface": "up"},
+        "down": {"uv": [3, 5, 6, 0], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_outside",
+      "from": [5, 10, 1],
+      "to": [7, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [6, 12, 2]},
+      "faces": {
+        "north": {"uv": [3, 8, 5, 10], "texture": "#dispenser"},
+        "east": {"uv": [1, 8, 3, 10], "texture": "#dispenser"},
+        "south": {"uv": [7, 8, 9, 10], "texture": "#dispenser"},
+        "west": {"uv": [5, 8, 7, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_inside",
+      "from": [7, 10, 1],
+      "to": [5, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [6, 12, 2]},
+      "faces": {
+        "north": {"uv": [5, 8, 3, 10], "texture": "#dispenser"},
+        "east": {"uv": [7, 8, 5, 10], "texture": "#dispenser"},
+        "south": {"uv": [9, 8, 7, 10], "texture": "#dispenser"},
+        "west": {"uv": [3, 8, 1, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "base",
+      "from": [0.5, 12, 0],
+      "to": [3.5, 16, 5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [2, 14, 5]},
+      "faces": {
+        "north": {"uv": [12, 12, 15, 16], "texture": "#dispenser", "cullface": "north"},
+        "east": {"uv": [6, 0, 11, 4], "texture": "#dispenser"},
+        "west": {"uv": [11, 0, 16, 4], "texture": "#dispenser"},
+        "up": {"uv": [3, 5, 0, 0], "texture": "#dispenser", "cullface": "up"},
+        "down": {"uv": [3, 5, 6, 0], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_outside",
+      "from": [1, 10, 1],
+      "to": [3, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [2, 12, 2]},
+      "faces": {
+        "north": {"uv": [3, 8, 5, 10], "texture": "#dispenser"},
+        "east": {"uv": [1, 8, 3, 10], "texture": "#dispenser"},
+        "south": {"uv": [7, 8, 9, 10], "texture": "#dispenser"},
+        "west": {"uv": [5, 8, 7, 10], "texture": "#dispenser"}
+      }
+    },
+    {
+      "name": "nozzle_inside",
+      "from": [3, 10, 1],
+      "to": [1, 12, 3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [2, 12, 2]},
+      "faces": {
+        "north": {"uv": [5, 8, 3, 10], "texture": "#dispenser"},
+        "east": {"uv": [7, 8, 5, 10], "texture": "#dispenser"},
+        "south": {"uv": [9, 8, 7, 10], "texture": "#dispenser"},
+        "west": {"uv": [3, 8, 1, 10], "texture": "#dispenser"}
+      }
+    }
+  ]
+}

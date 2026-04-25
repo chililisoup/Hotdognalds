@@ -2,6 +2,7 @@ package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.block.entity.CrateBlockEntity;
+import dev.chililisoup.hotdognalds.block.entity.SodaFountainBlockEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
@@ -15,6 +16,12 @@ public final class ModBlockEntityTypes {
             "crate",
             CrateBlockEntity::new,
             ModBlocks.CRATE
+    );
+
+    public static final BlockEntityType<SodaFountainBlockEntity> SODA_FOUNTAIN = register(
+            "soda_fountain",
+            SodaFountainBlockEntity::new,
+            ModBlocks.SODA_FOUNTAIN
     );
 
     private static <T extends BlockEntity> BlockEntityType<T> register(

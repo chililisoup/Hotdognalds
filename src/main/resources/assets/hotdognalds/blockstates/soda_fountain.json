@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "hotdognalds:block/soda_fountain",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "hotdognalds:block/soda_fountain"
+    },
+    "facing=south": {
+      "model": "hotdognalds:block/soda_fountain",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "hotdognalds:block/soda_fountain",
+      "y": 270
+    }
+  }
+}

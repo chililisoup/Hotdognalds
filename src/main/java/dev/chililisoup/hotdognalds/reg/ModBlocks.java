@@ -3,6 +3,7 @@ package dev.chililisoup.hotdognalds.reg;
 import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.block.CrateBlock;
 import dev.chililisoup.hotdognalds.block.GrillBlock;
+import dev.chililisoup.hotdognalds.block.SodaFountainBlock;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
@@ -37,6 +38,12 @@ public final class ModBlocks {
                     .isRedstoneConductor(Blocks::never)
                     .isSuffocating(Blocks::never)
                     .isViewBlocking(Blocks::never)
+    );
+
+    public static final Block SODA_FOUNTAIN = register(
+            "soda_fountain",
+            SodaFountainBlock::new,
+            Properties.ofFullCopy(Blocks.CAULDRON)
     );
 
     static {

@@ -9,9 +9,9 @@ import org.jetbrains.annotations.Nullable;
 @Environment(EnvType.CLIENT)
 public class CrateRenderState extends BlockEntityRenderState {
     public @Nullable ItemStackRenderState itemStackRenderState;
-    float yRot;
-    float yOffset;
-    float scale;
-    int zCount;
-    int xCount;
+    public float yRot;
+    public float yOffset;
+    public float scale;
+    public int zCount;
+    public int xCount;
 }

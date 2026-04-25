@@ -84,57 +84,56 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity, Crat
         BlockEntityRenderer.super.extractRenderState(blockEntity, state, partialTicks, cameraPosition, breakProgress);
 
         ItemStack itemStack = blockEntity.getTheItem();
-        if (!itemStack.isEmpty()) {
-            ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
-            this.itemModelResolver.updateForTopItem(
-                    itemStackRenderState,
-                    itemStack,
-                    ItemDisplayContext.ON_SHELF,
-                    blockEntity.getLevel(),
-                    blockEntity,
-                    HashCommon.long2int(blockEntity.getBlockPos().asLong())
-            );
-            state.itemStackRenderState = itemStackRenderState;
+        if (itemStack.isEmpty()) return;
 
-            state.yRot = (switch (blockEntity.getBlockState().getValue(CrateBlock.FACING)) {
-                case NORTH -> Direction.NORTH;
-                case SOUTH -> Direction.SOUTH;
-                case WEST -> Direction.EAST;
-                default -> Direction.WEST;
-            }).toYRot();
+        ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
+        this.itemModelResolver.updateForTopItem(
+                itemStackRenderState,
+                itemStack,
+                ItemDisplayContext.ON_SHELF,
+                blockEntity.getLevel(),
+                blockEntity,
+                HashCommon.long2int(blockEntity.getBlockPos().asLong())
+        );
+        state.itemStackRenderState = itemStackRenderState;
 
+        state.yRot = (switch (blockEntity.getBlockState().getValue(CrateBlock.FACING)) {
+            case NORTH -> Direction.NORTH;
+            case SOUTH -> Direction.SOUTH;
+            case WEST -> Direction.EAST;
+            default -> Direction.WEST;
+        }).toYRot();
 
-            AABB box = state.itemStackRenderState.getModelBoundingBox();
-            state.yOffset = (float) -box.minY / 4F;
+        AABB box = state.itemStackRenderState.getModelBoundingBox();
+        state.yOffset = (float) -box.minY / 4F;
 
-            if (itemStack.get(ModComponents.HOTDOG_CONTENTS) instanceof HotdogContents contents) {
-                state.yRot += 90F;
-                if (contents.hasDog()) {
-                    state.scale = 0.5F;
-                    state.zCount = 6;
-                } else {
-                    state.scale = 0.67F;
-                    state.zCount = 4;
-                }
-                state.xCount = 2;
-
-                return;
-            }
-
-            if (itemStack.has(ModComponents.CUP_CONTENTS)) {
-                state.yRot += 90F;
-                state.yOffset += 0.375F;
+        if (itemStack.get(ModComponents.HOTDOG_CONTENTS) instanceof HotdogContents contents) {
+            state.yRot += 90F;
+            if (contents.hasDog()) {
+                state.scale = 0.5F;
+                state.zCount = 6;
+            } else {
                 state.scale = 0.67F;
                 state.zCount = 4;
-                state.xCount = 4;
-
-                return;
             }
+            state.xCount = 2;
 
-            state.scale = 0.25F;
-            state.xCount = Mth.clamp(Mth.floor(3.0 / box.getXsize()), 1, 4);
-            state.zCount = Mth.clamp(Mth.floor(3.0 / box.getZsize()), 1, 4);
+            return;
         }
+
+        if (itemStack.has(ModComponents.CUP_CONTENTS)) {
+            state.yRot += 90F;
+            state.yOffset += 0.375F;
+            state.scale = 0.67F;
+            state.zCount = 4;
+            state.xCount = 4;
+
+            return;
+        }
+
+        state.scale = 0.25F;
+        state.xCount = Mth.clamp(Mth.floor(3.0 / box.getXsize()), 1, 4);
+        state.zCount = Mth.clamp(Mth.floor(3.0 / box.getZsize()), 1, 4);
     }
 
     @Override

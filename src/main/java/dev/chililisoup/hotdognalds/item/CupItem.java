@@ -79,6 +79,8 @@ public class CupItem extends SpawnItem<Cup> {
         CupContents newContents = newStack.get(ModComponents.CUP_CONTENTS);
         if (newContents == null) return true;
 
+        if (oldContents.drinkColor() != newContents.drinkColor()) return true;
+
         ItemStack oldNoContents = oldStack.copy();
         ItemStack newNoContents = newStack.copy();
         oldNoContents.remove(ModComponents.CUP_CONTENTS);

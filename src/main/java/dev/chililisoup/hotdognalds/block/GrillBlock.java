@@ -102,7 +102,7 @@ public class GrillBlock extends Block {
     @Override
     public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState onState, @NotNull Entity entity) {
         if (onState.getValue(LIT)
-                && Math.abs(entity.getY() % 1.0) < 0.01
+                && Math.abs(entity.getY() - pos.getY() - 1) < 0.01
                 && (entity instanceof LivingEntity || entity instanceof Hotdog)
         ) {
             if (level instanceof ServerLevel serverLevel)

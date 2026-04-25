@@ -168,7 +168,7 @@ public class Cup extends Entity implements CondimentCollector {
                 Mth.lerp(partialTick, this.lastFillLevel, this.fillLevel);
     }
 
-    private void mixDrink(float amount, int color) {
+    public void mixDrink(float amount, int color) {
         CupContents contents = this.getContents();
         if (contents.isFull()) return;
 

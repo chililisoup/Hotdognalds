@@ -21,5 +21,6 @@
   "lore.hotdognalds.grill": "Can be toggled on/off by clicking the red light",
   "block.hotdognalds.crate": "Crate",
   "lore.hotdognalds.crate": "Creative item dispenser utility/decoration",
+  "block.hotdognalds.soda_fountain": "Soda Fountain",
   "itemGroup.hotdognalds.main": "Hotdognald's"
 }
