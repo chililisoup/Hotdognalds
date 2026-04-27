@@ -16,6 +16,7 @@
   "item.hotdognalds.tip.sneak_to_place": "Sneak to place",
   "item.hotdognalds.tip.invulnerable": "Invulnerable",
   "entity.hotdognalds.hotdog": "Hotdog",
+  "entity.hotdognalds.hotdog_projectile": "Hotdog Projectile",
   "entity.hotdognalds.condiment_dispenser": "Condiment Dispenser",
   "entity.hotdognalds.cup": "Cup",
   "block.hotdognalds.grill": "Grill",

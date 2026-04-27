@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "hotdognalds:grill",
-    "hotdognalds:crate"
+    "hotdognalds:crate",
+    "hotdognalds:soda_fountain",
+    "hotdognalds:counter"
   ]
 }

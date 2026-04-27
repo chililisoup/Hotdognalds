@@ -4,11 +4,9 @@ import dev.chililisoup.hotdognalds.item.CupContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
 import dev.chililisoup.hotdognalds.reg.ModEntityDataSerializers;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -19,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -27,14 +24,10 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
-public class Cup extends Entity implements CondimentCollector {
+public class Cup extends FoodEntity implements CondimentCollector {
     private static final EntityDataAccessor<CupContents> DATA_CONTENTS = SynchedEntityData.defineId(
             Cup.class, ModEntityDataSerializers.CUP_CONTENTS
     );
-
-    protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
     private float lastFillLevel = 0F;
     private float fillLevel = 0F;
@@ -43,8 +36,7 @@ public class Cup extends Entity implements CondimentCollector {
         super(type, level);
     }
 
-    @Nullable
-    public static Cup create(
+    public static @Nullable Cup create(
             ServerLevel serverLevel,
             Vec3 position,
             float rotation,
@@ -52,35 +44,11 @@ public class Cup extends Entity implements CondimentCollector {
             ItemStack itemStack,
             @Nullable Player player
     ) {
-        Consumer<Cup> consumer = EntityType.createDefaultStackConfig(serverLevel, itemStack, player);
-        Cup cup = ModEntityTypes.CUP.create(
-                serverLevel,
-                consumer,
-                BlockPos.containing(position),
-                entitySpawnReason,
-                true,
-                true
-        );
+        Cup cup = create(ModEntityTypes.CUP, serverLevel, position, rotation, entitySpawnReason, itemStack, player);
         if (cup == null) return null;
 
         cup.setContents(itemStack.getOrDefault(ModComponents.CUP_CONTENTS, CupContents.EMPTY));
-        cup.snapTo(position, rotation, 0);
-        cup.playPlaceSound();
-        cup.gameEvent(GameEvent.ENTITY_PLACE, player);
         return cup;
-    }
-
-    private void playPlaceSound() {
-        this.playSound(SoundEvents.PAINTING_PLACE, 0.75F, 1F);
-    }
-
-    private void playTakeSound() {
-        this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
-    }
-
-    @Override
-    public @NotNull InterpolationHandler getInterpolation() {
-        return this.interpolation;
     }
 
     @Override
@@ -96,24 +64,6 @@ public class Cup extends Entity implements CondimentCollector {
         }
 
         super.tick();
-        if (this.isRemoved()) return;
-
-        if (this.isInterpolating()) this.getInterpolation().interpolate();
-
-        if (this.isLocalInstanceAuthoritative()) {
-            Vec3 deltaMovement = this.getDeltaMovement()
-                    .scale(0.95)
-                    .add(0, -this.getGravity(), 0);
-            this.setDeltaMovement(deltaMovement);
-            this.move(MoverType.SELF, deltaMovement);
-        } else this.setDeltaMovement(Vec3.ZERO);
-
-        this.applyEffectsFromBlocks();
-    }
-
-    @Override
-    protected double getDefaultGravity() {
-        return 0.08;
     }
 
     @Override
@@ -186,18 +136,9 @@ public class Cup extends Entity implements CondimentCollector {
         this.mixDrink(0.25F, color);
     }
 
-    private ItemStack getItemStack() {
+    @Override
+    protected ItemStack getItemStack() {
         return this.getContents().getItemStack();
-    }
-
-    @Override
-    public ItemStack getPickResult() {
-        return this.getItemStack();
-    }
-
-    @Override
-    public boolean isPickable() {
-        return !this.isRemoved();
     }
 
     @Override

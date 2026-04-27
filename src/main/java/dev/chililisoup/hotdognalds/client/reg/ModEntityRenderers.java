@@ -6,6 +6,7 @@ import dev.chililisoup.hotdognalds.client.model.CupModel;
 import dev.chililisoup.hotdognalds.client.model.HotdogModel;
 import dev.chililisoup.hotdognalds.client.renderer.CondimentDispenserRenderer;
 import dev.chililisoup.hotdognalds.client.renderer.CupRenderer;
+import dev.chililisoup.hotdognalds.client.renderer.HotdogProjectileRenderer;
 import dev.chililisoup.hotdognalds.client.renderer.HotdogRenderer;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
 import net.fabricmc.api.EnvType;
@@ -39,6 +40,10 @@ public final class ModEntityRenderers {
             CupRenderer::new,
             CupModel::createBodyLayer
     );
+
+    static {
+        EntityRenderers.register(ModEntityTypes.HOTDOG_PROJECTILE, HotdogProjectileRenderer::new);
+    }
 
     private static <T extends Entity> ModelLayerLocation register(
             String name,

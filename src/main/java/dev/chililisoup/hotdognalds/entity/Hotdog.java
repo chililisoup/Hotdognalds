@@ -7,7 +7,6 @@ import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -33,21 +32,16 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
-public class Hotdog extends Entity implements CondimentCollector {
+public class Hotdog extends FoodEntity implements CondimentCollector {
     private static final EntityDataAccessor<HotdogContents> DATA_CONTENTS = SynchedEntityData.defineId(
             Hotdog.class, ModEntityDataSerializers.HOTDOG_CONTENTS
     );
-
-    protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
     public Hotdog(EntityType<Hotdog> type, Level level) {
         super(type, level);
     }
 
-    @Nullable
-    public static Hotdog create(
+    public static @Nullable Hotdog create(
             ServerLevel serverLevel,
             Vec3 position,
             float rotation,
@@ -55,53 +49,11 @@ public class Hotdog extends Entity implements CondimentCollector {
             ItemStack itemStack,
             @Nullable Player player
     ) {
-        Consumer<Hotdog> consumer = EntityType.createDefaultStackConfig(serverLevel, itemStack, player);
-        Hotdog hotdog = ModEntityTypes.HOTDOG.create(
-                serverLevel,
-                consumer,
-                BlockPos.containing(position),
-                entitySpawnReason,
-                true,
-                true
-        );
+        Hotdog hotdog = create(ModEntityTypes.HOTDOG, serverLevel, position, rotation, entitySpawnReason, itemStack, player);
         if (hotdog == null) return null;
 
         hotdog.setContents(itemStack.getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG));
-        hotdog.snapTo(position, rotation, 0);
-        hotdog.playPlaceSound();
-        hotdog.gameEvent(GameEvent.ENTITY_PLACE, player);
         return hotdog;
-    }
-
-    private void playPlaceSound() {
-        this.playSound(SoundEvents.PAINTING_PLACE, 0.75F, 1F);
-    }
-
-    private void playTakeSound() {
-        this.playSound(SoundEvents.PAINTING_BREAK, 0.75F, 1F);
-    }
-
-    @Override
-    public @NotNull InterpolationHandler getInterpolation() {
-        return this.interpolation;
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (this.isRemoved()) return;
-
-        if (this.isInterpolating()) this.getInterpolation().interpolate();
-
-        if (this.isLocalInstanceAuthoritative()) {
-            Vec3 deltaMovement = this.getDeltaMovement()
-                    .scale(0.95)
-                    .add(0, -this.getGravity(), 0);
-            this.setDeltaMovement(deltaMovement);
-            this.move(MoverType.SELF, deltaMovement);
-        } else this.setDeltaMovement(Vec3.ZERO);
-
-        this.applyEffectsFromBlocks();
     }
 
     public void doCookEffect() {
@@ -124,11 +76,6 @@ public class Hotdog extends Entity implements CondimentCollector {
             this.level().addParticle(ParticleTypes.SMALL_FLAME, this.getX() + xn, this.getY(), this.getZ() + zn, 0.0, 0.0, 0.0);
         } else if (this.random.nextFloat() > 0.95F)
             this.playSound(SoundEvents.GENERIC_BURN, 0.125F, 0.5F);
-    }
-
-    @Override
-    protected double getDefaultGravity() {
-        return 0.08;
     }
 
     @Override
@@ -282,23 +229,9 @@ public class Hotdog extends Entity implements CondimentCollector {
         return true;
     }
 
-    private ItemStack getItemStack() {
+    @Override
+    protected ItemStack getItemStack() {
         return this.getContents().getRoundedItemStack();
-    }
-
-    @Override
-    protected @NotNull Component getTypeName() {
-        return this.getItemStack().getHoverName();
-    }
-
-    @Override
-    public ItemStack getPickResult() {
-        return this.getItemStack();
-    }
-
-    @Override
-    public boolean isPickable() {
-        return !this.isRemoved();
     }
 
     @Override

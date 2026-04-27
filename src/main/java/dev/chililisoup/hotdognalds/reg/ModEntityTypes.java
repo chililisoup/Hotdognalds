@@ -4,6 +4,7 @@ import dev.chililisoup.hotdognalds.Hotdognalds;
 import dev.chililisoup.hotdognalds.entity.CondimentDispenser;
 import dev.chililisoup.hotdognalds.entity.Cup;
 import dev.chililisoup.hotdognalds.entity.Hotdog;
+import dev.chililisoup.hotdognalds.entity.HotdogProjectile;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -17,15 +18,22 @@ public final class ModEntityTypes {
             "hotdog",
             EntityType.Builder.of(Hotdog::new, MobCategory.MISC)
                     .noLootTable()
-                    .noSummon()
                     .sized(0.2F, 0.2F)
+    );
+
+    public static final EntityType<HotdogProjectile> HOTDOG_PROJECTILE = register(
+            "hotdog_projectile",
+            EntityType.Builder.of(HotdogProjectile::new, MobCategory.MISC)
+                    .noLootTable()
+                    .sized(0.2F, 0.2F)
+                    .clientTrackingRange(4)
+                    .updateInterval(10)
     );
 
     public static final EntityType<CondimentDispenser> CONDIMENT_DISPENSER = register(
             "condiment_dispenser",
             EntityType.Builder.of(CondimentDispenser::new, MobCategory.MISC)
                     .noLootTable()
-                    .noSummon()
                     .sized(0.25F, 0.4375F)
     );
 
@@ -33,7 +41,6 @@ public final class ModEntityTypes {
             "cup",
             EntityType.Builder.of(Cup::new, MobCategory.MISC)
                     .noLootTable()
-                    .noSummon()
                     .sized(0.1875F, 0.3125F)
     );
 
