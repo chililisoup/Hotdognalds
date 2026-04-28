@@ -58,7 +58,7 @@ public class ColoredFallAndLandParticle extends DripParticle.FallAndLandParticle
                 double b,
                 @NotNull RandomSource random
         ) {
-            DripParticle particle = new ColoredFallAndLandParticle(
+            ColoredFallAndLandParticle particle = new ColoredFallAndLandParticle(
                     level, x, y, z, this.sprite.get(random)
             );
             particle.gravity = 0.01F;

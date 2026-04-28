@@ -103,16 +103,7 @@ public class CondimentDispenser extends Entity {
             if (this.isPumping()) {
                 Vec3 nozzlePos = this.nozzleFloorPos()
                         .add(0, 0.625 - this.pumpAmt * 0.25, 0);
-                int color = this.getColor();
-                this.level().addParticle(
-                        ModParticles.COLORED_FALL,
-                        nozzlePos.x,
-                        nozzlePos.y,
-                        nozzlePos.z,
-                        ARGB.redFloat(color),
-                        ARGB.greenFloat(color),
-                        ARGB.blueFloat(color)
-                );
+                ModParticles.addColoredFall(this.level(), nozzlePos, ARGB.opaque(this.getColor()));
             }
         } else if (this.pumpingTicks > 0 && --this.pumpingTicks == 0) {
             int color = ARGB.opaque(this.getColor());

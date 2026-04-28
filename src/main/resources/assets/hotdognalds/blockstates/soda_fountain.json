@@ -1,18 +1,48 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "hotdognalds:block/soda_fountain",
+    "facing=east,soda_fountain_variant=0": {
+      "model": "hotdognalds:block/soda_fountain_0",
       "y": 90
     },
-    "facing=north": {
-      "model": "hotdognalds:block/soda_fountain"
+    "facing=north,soda_fountain_variant=0": {
+      "model": "hotdognalds:block/soda_fountain_0"
     },
-    "facing=south": {
-      "model": "hotdognalds:block/soda_fountain",
+    "facing=south,soda_fountain_variant=0": {
+      "model": "hotdognalds:block/soda_fountain_0",
       "y": 180
     },
-    "facing=west": {
-      "model": "hotdognalds:block/soda_fountain",
+    "facing=west,soda_fountain_variant=0": {
+      "model": "hotdognalds:block/soda_fountain_0",
+      "y": 270
+    },
+    "facing=east,soda_fountain_variant=1": {
+      "model": "hotdognalds:block/soda_fountain_1",
+      "y": 90
+    },
+    "facing=north,soda_fountain_variant=1": {
+      "model": "hotdognalds:block/soda_fountain_1"
+    },
+    "facing=south,soda_fountain_variant=1": {
+      "model": "hotdognalds:block/soda_fountain_1",
+      "y": 180
+    },
+    "facing=west,soda_fountain_variant=1": {
+      "model": "hotdognalds:block/soda_fountain_1",
+      "y": 270
+    },
+    "facing=east,soda_fountain_variant=2": {
+      "model": "hotdognalds:block/soda_fountain_2",
+      "y": 90
+    },
+    "facing=north,soda_fountain_variant=2": {
+      "model": "hotdognalds:block/soda_fountain_2"
+    },
+    "facing=south,soda_fountain_variant=2": {
+      "model": "hotdognalds:block/soda_fountain_2",
+      "y": 180
+    },
+    "facing=west,soda_fountain_variant=2": {
+      "model": "hotdognalds:block/soda_fountain_2",
       "y": 270
     }
   }

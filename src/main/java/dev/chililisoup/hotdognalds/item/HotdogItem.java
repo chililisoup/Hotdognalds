@@ -22,7 +22,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class HotdogItem extends SpawnItem<Hotdog> implements ProjectileItem {
     public HotdogItem(Properties properties) {
-        super(properties, ModEntityTypes.HOTDOG, Hotdog::create, true);
+        super(properties, ModEntityTypes.HOTDOG, Hotdog::create);
+    }
+
+    @Override
+    protected boolean requireSneakToPlace(ItemStack itemStack) {
+        return true;
     }
 
     @Override

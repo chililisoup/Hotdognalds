@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,10 +28,10 @@ public class SodaFountainBlockEntity extends BlockEntity {
     private static final int DISPENSE_TICKS = 5;
 
     private final List<Dispenser> dispensers = List.of(
-            new Dispenser("dispenser0", 0.125F, 0xBD341005),
-            new Dispenser("dispenser1", 0.375F, 0xBDC251FF),
-            new Dispenser("dispenser2", 0.625F, 0xBD36DEE7),
-            new Dispenser("dispenser3", 0.875F, 0xBD51ED0B)
+            new Dispenser("dispenser0", 0.125F, 0xBD341005, 0xBDFFFD10, 0xBDFFB1E3),
+            new Dispenser("dispenser1", 0.375F, 0xBDC251FF, 0xBDFF5157, 0xBDBEED7F),
+            new Dispenser("dispenser2", 0.625F, 0xBD36DEE7, 0x80CDF2F2, 0xBD4F104A),
+            new Dispenser("dispenser3", 0.875F, 0xBD51ED0B, 0xBDFBA414, 0xBDFFE4D0)
     );
     private boolean ticking;
 
@@ -45,23 +44,15 @@ public class SodaFountainBlockEntity extends BlockEntity {
 
         Direction facing = state.getValue(SodaFountainBlock.FACING);
         Vec3 bottomCenter = pos.getBottomCenter();
+        int colorIndex = state.getValue(SodaFountainBlock.VARIANT);
 
         if (level.isClientSide()) {
+
             for (Dispenser dispenser : fountain.dispensers) {
                 if (dispenser.isInactive()) continue;
 
                 Vec3 nozzlePos = bottomCenter.add(dispenser.pos(facing));
-                int color = dispenser.color;
-
-                level.addParticle(
-                        ModParticles.COLORED_FALL,
-                        nozzlePos.x,
-                        nozzlePos.y,
-                        nozzlePos.z,
-                        ARGB.redFloat(color),
-                        ARGB.greenFloat(color),
-                        ARGB.blueFloat(color)
-                );
+                ModParticles.addColoredFall(level, nozzlePos, dispenser.colors[colorIndex]);
             }
 
             return;
@@ -73,7 +64,7 @@ public class SodaFountainBlockEntity extends BlockEntity {
             if (--dispenser.value == 0) changed = true;
 
             Vec3 nozzlePos = bottomCenter.add(dispenser.pos(facing));
-            int color = dispenser.color;
+            int color = dispenser.colors[colorIndex];
 
             level.getEntitiesOfClass(Cup.class, AABB.ofSize(
                     nozzlePos.subtract(0, 0.28125, 0),
@@ -139,13 +130,14 @@ public class SodaFountainBlockEntity extends BlockEntity {
     private static final class Dispenser {
         private final String name;
         private final float nozzlePos;
-        private final int color;
+        private final int[] colors = new int[SodaFountainBlock.VARIANT_COUNT];
         private byte value = 0;
 
-        private Dispenser(String name, float nozzlePos, int color) {
+        private Dispenser(String name, float nozzlePos, int... colors) {
             this.name = name;
             this.nozzlePos = nozzlePos - 0.5F;
-            this.color = color;
+            for (int i = 0; i < colors.length && i < this.colors.length; i++)
+                this.colors[i] = colors[i];
         }
 
         private boolean isDispensing() {

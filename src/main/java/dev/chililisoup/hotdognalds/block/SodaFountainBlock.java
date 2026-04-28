@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -34,6 +35,8 @@ import java.util.Optional;
 public class SodaFountainBlock extends BaseEntityBlock {
     public static final MapCodec<SodaFountainBlock> CODEC = simpleCodec(SodaFountainBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final IntegerProperty VARIANT = ModBlockStateProperties.SODA_FOUNTAIN_VARIANT;
+    public static final int VARIANT_COUNT = VARIANT.getPossibleValues().size();
     private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(
             Shapes.or(
                     Block.column(16, 0, 2),
@@ -54,13 +57,15 @@ public class SodaFountainBlock extends BaseEntityBlock {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
+                .setValue(VARIANT, 0)
         );
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection().getOpposite());
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(VARIANT, context.getLevel().getRandom().nextInt(VARIANT_COUNT));
     }
 
     @Override
@@ -132,7 +137,7 @@ public class SodaFountainBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+        builder.add(FACING, VARIANT);
     }
 
     @Override

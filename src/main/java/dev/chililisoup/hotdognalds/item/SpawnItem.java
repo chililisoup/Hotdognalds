@@ -28,25 +28,24 @@ import java.util.function.Consumer;
 public class SpawnItem<T extends Entity> extends Item {
     private final EntityType<T> entityType;
     private final EntityCreator<T> entityCreator;
-    private final boolean requireSneakToPlace;
 
-    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator, boolean requireSneakToPlace) {
+    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator) {
         super(properties);
         this.entityType = entityType;
         this.entityCreator = entityCreator;
-        this.requireSneakToPlace = requireSneakToPlace;
     }
 
-    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator) {
-        this(properties, entityType, entityCreator, false);
+    protected boolean requireSneakToPlace(ItemStack itemStack) {
+        return false;
     }
 
     @Override
     public @NotNull InteractionResult useOn(final UseOnContext context) {
         if (context.getClickedFace() != Direction.UP) return InteractionResult.PASS;
 
+        ItemStack itemStack = context.getItemInHand();
         Player player = context.getPlayer();
-        if (this.requireSneakToPlace && (player == null || !player.isShiftKeyDown()))
+        if (this.requireSneakToPlace(itemStack) && (player == null || !player.isShiftKeyDown()))
             return InteractionResult.PASS;
 
         Level level = context.getLevel();
@@ -60,7 +59,6 @@ public class SpawnItem<T extends Entity> extends Item {
         if (!level.noCollision(null, box) || !level.getEntities(null, box).isEmpty())
             return InteractionResult.FAIL;
 
-        ItemStack itemStack = context.getItemInHand();
         if (level instanceof ServerLevel serverLevel) {
             T entity = this.entityCreator.create(
                     serverLevel,
@@ -86,7 +84,7 @@ public class SpawnItem<T extends Entity> extends Item {
             @NotNull Consumer<Component> builder,
             @NotNull TooltipFlag tooltipFlag
     ) {
-        if (this.requireSneakToPlace) builder.accept(Component
+        if (this.requireSneakToPlace(itemStack)) builder.accept(Component
                 .translatable("item.hotdognalds.tip.sneak_to_place")
                 .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
         );

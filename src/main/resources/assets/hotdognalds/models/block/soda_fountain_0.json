@@ -1,0 +1,6 @@
+{
+  "parent": "hotdognalds:block/soda_fountain",
+  "textures": {
+    "dispenser": "hotdognalds:block/soda_fountain_dispenser_0"
+  }
+}

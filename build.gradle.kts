@@ -60,6 +60,11 @@ dependencies {
     api("net.fabricmc.fabric-api:fabric-api:${deps.fabricApi}")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
 idea {
     module {
         isDownloadSources = true

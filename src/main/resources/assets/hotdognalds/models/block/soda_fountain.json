@@ -3,7 +3,6 @@
   "credit": "Made with Blockbench",
   "parent": "block/block",
   "textures": {
-    "dispenser": "hotdognalds:block/soda_fountain_dispenser",
     "drain": "hotdognalds:block/soda_fountain_drain",
     "body": "hotdognalds:block/soda_fountain_body",
     "particle": "hotdognalds:block/soda_fountain_body"

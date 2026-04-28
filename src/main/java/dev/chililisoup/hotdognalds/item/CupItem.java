@@ -22,7 +22,13 @@ public class CupItem extends SpawnItem<Cup> {
     private static final int CONSUME_BUFFER_TICKS = 10;
 
     public CupItem(Properties properties) {
-        super(properties, ModEntityTypes.CUP, Cup::create, true);
+        super(properties, ModEntityTypes.CUP, Cup::create);
+    }
+
+    @Override
+    protected boolean requireSneakToPlace(ItemStack itemStack) {
+        CupContents contents = itemStack.get(ModComponents.CUP_CONTENTS);
+        return contents != null && contents.hasDrink();
     }
 
     @Override
