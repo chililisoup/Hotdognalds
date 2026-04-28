@@ -1,6 +1,8 @@
 package dev.chililisoup.hotdognalds.block;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.hotdognalds.block.entity.CrateBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,21 +30,30 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 public class CrateBlock extends BaseEntityBlock {
-    public static final MapCodec<CrateBlock> CODEC = simpleCodec(CrateBlock::new);
+    public static final MapCodec<CrateBlock> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
+            propertiesCodec(),
+            Codec.BOOL.fieldOf("creative").forGetter(CrateBlock::isCreative)
+    ).apply(i, CrateBlock::new));
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     protected static final VoxelShape SHAPE = Shapes.join(
             Shapes.block(),
             Block.column(14, 12, 16),
             BooleanOp.ONLY_FIRST
     );
+    private final boolean creative;
 
     @Override
     public @NotNull MapCodec<CrateBlock> codec() {
         return CODEC;
     }
 
-    public CrateBlock(Properties properties) {
+    public CrateBlock(Properties properties, boolean creative) {
         super(properties);
+        this.creative = creative;
+    }
+
+    public boolean isCreative() {
+        return this.creative;
     }
 
     @Override
@@ -70,25 +81,24 @@ public class CrateBlock extends BaseEntityBlock {
             @NotNull BlockHitResult hitResult
     ) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity))
-            return InteractionResult.PASS;
+        if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity)
+                || crateBlockEntity.getTheItem().isEmpty()
+        ) return InteractionResult.PASS;
 
-        ItemStack crateStack = crateBlockEntity.getTheItem();
+        if (level.isClientSide()) return InteractionResult.SUCCESS_SERVER;
 
-        if (player.hasInfiniteMaterials() && player.isShiftKeyDown()) {
-            if (!level.isClientSide()) {
-                crateBlockEntity.removeItemStack();
-                level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.5F, 1.0F);
-            }
+        if (this.isCreative() && player.hasInfiniteMaterials() && player.isShiftKeyDown()) {
+            crateBlockEntity.removeItemStack();
+            level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.5F, 1.0F);
             return InteractionResult.SUCCESS_SERVER;
         }
 
-        if (crateStack.isEmpty()) return InteractionResult.PASS;
+        ItemStack crateStack = player.isShiftKeyDown() ?
+                crateBlockEntity.takeAll() :
+                crateBlockEntity.takeOne();
 
-        if (!level.isClientSide()) {
-            if (player.addItem(crateStack))
-                level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 2.0F);
-        }
+        if (!crateStack.isEmpty() && player.addItem(crateStack))
+            level.playSound(null, pos, SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 0.5F, 2.0F);
 
         return InteractionResult.SUCCESS_SERVER;
     }
@@ -103,21 +113,25 @@ public class CrateBlock extends BaseEntityBlock {
             @NotNull InteractionHand hand,
             @NotNull BlockHitResult hitResult
     ) {
-        if (!player.hasInfiniteMaterials())
+        if (this.isCreative() && !player.hasInfiniteMaterials())
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof CrateBlockEntity crateBlockEntity))
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
-        ItemStack crateStack = crateBlockEntity.getTheItem();
-        if (!crateStack.isEmpty())
+        if (crateBlockEntity.getTheItem().isEmpty()) {
+            if (itemStack.isEmpty())
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else if (this.isCreative())
             return InteractionResult.TRY_WITH_EMPTY_HAND;
 
         if (!level.isClientSide()) {
-            crateBlockEntity.setItemStack(itemStack);
-            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.5F, 1.0F);
+            if (crateBlockEntity.addFromItem(itemStack)) {
+                level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.5F, 1.0F);
+            } else return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
+
         return InteractionResult.SUCCESS_SERVER;
     }
 

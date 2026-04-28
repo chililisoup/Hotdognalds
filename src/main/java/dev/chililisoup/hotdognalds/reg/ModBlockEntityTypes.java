@@ -15,7 +15,8 @@ public final class ModBlockEntityTypes {
     public static final BlockEntityType<CrateBlockEntity> CRATE = register(
             "crate",
             CrateBlockEntity::new,
-            ModBlocks.CRATE
+            ModBlocks.CRATE,
+            ModBlocks.CREATIVE_CRATE
     );
 
     public static final BlockEntityType<SodaFountainBlockEntity> SODA_FOUNTAIN = register(

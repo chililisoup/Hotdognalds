@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:porkchop"
+  },
+  "pattern": [
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "hotdognalds:hotdog"
+  }
+}

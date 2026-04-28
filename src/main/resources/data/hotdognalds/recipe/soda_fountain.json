@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:resin_brick",
+    "I": "minecraft:iron_ingot",
+    "X": "minecraft:water_bucket"
+  },
+  "pattern": [
+    " X ",
+    "I#I",
+    "I#I"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hotdognalds:soda_fountain"
+  }
+}

@@ -33,7 +33,7 @@ public final class ModBlocks {
 
     public static final Block CRATE = register(
             "crate",
-            CrateBlock::new,
+            properties -> new CrateBlock(properties, false),
             Properties.of()
                     .mapColor(MapColor.STONE)
                     .noOcclusion()
@@ -42,6 +42,15 @@ public final class ModBlocks {
                     .isRedstoneConductor(Blocks::never)
                     .isSuffocating(Blocks::never)
                     .isViewBlocking(Blocks::never)
+    );
+
+    public static final Block CREATIVE_CRATE = register(
+            "creative_crate",
+            properties -> new CrateBlock(properties, true),
+            Properties.ofFullCopy(CRATE)
+                    .requiresCorrectToolForDrops()
+                    .strength(-1.0F, 3600000.0F)
+                    .noLootTable()
     );
 
     public static final Block SODA_FOUNTAIN = register(

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:bread"
+  },
+  "pattern": [
+    "###"
+  ],
+  "result": {
+    "count": 4,
+    "id": "hotdognalds:hotdog",
+    "components": {
+      "minecraft:food": {
+        "saturation": 8.0,
+        "nutrition": 4
+      },
+      "hotdognalds:hotdog_contents": {
+        "bun_cook_amount": 0.0
+      }
+    }
+  }
+}
