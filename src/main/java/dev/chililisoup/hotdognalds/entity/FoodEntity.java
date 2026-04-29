@@ -1,6 +1,8 @@
 package dev.chililisoup.hotdognalds.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -8,6 +10,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -85,7 +88,32 @@ public abstract class FoodEntity extends Entity {
         return 0.08;
     }
 
+    public void doCookEffect() {
+        if (this.getInBlockState().getBlock() instanceof BaseFireBlock) return;
+        if (this.level().isClientSide()) this.doClientCookEffect();
+        else if (this.random.nextFloat() > 0.95F)
+            this.playSound(SoundEvents.GENERIC_BURN, 0.125F, 0.5F);
+    }
+
+    protected void doClientCookEffect() {}
+
+    protected void placeFire(@NotNull ServerLevel level) {
+        BlockPos blockPos = this.blockPosition();
+        if (BaseFireBlock.canBePlacedAt(level, blockPos, Direction.DOWN)) {
+            level.setBlock(blockPos, BaseFireBlock.getState(level, blockPos), 11);
+            this.playSound(SoundEvents.FIRECHARGE_USE);
+            level.gameEvent(this, GameEvent.BLOCK_PLACE, blockPos);
+        }
+    }
+
     protected abstract ItemStack getItemStack();
+
+    protected ItemStack updateItemStack(ItemStack itemStack) {
+        if (this.hasCustomName()) itemStack.set(
+                DataComponents.CUSTOM_NAME, this.getCustomName()
+        );
+        return itemStack;
+    }
 
     @Override
     protected @NotNull Component getTypeName() {

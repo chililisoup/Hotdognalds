@@ -12,9 +12,10 @@ import net.minecraft.core.particles.ParticleType;
 public final class ModParticleProviders {
     public static void registerProviders(ParticleProviderConsumer consumer) {
         consumer.accept(ModParticles.COLORED_FALL, ColoredFallAndLandParticle.ColoredFallProvider::new);
-        consumer.accept(ModParticles.COLORED_LAND, ColoredFallAndLandParticle.ColoredLandProvider::new);
+        consumer.accept(ModParticles.COLORED_LAND, ColoredFallAndLandParticle.ColoredLandParticle.ColoredLandProvider::new);
     }
 
+    @FunctionalInterface
     public interface ParticleProviderConsumer {
         <T extends ParticleOptions> void accept(
                 ParticleType<T> type,

@@ -1,7 +1,7 @@
 package dev.chililisoup.hotdognalds.block;
 
 import com.mojang.serialization.MapCodec;
-import dev.chililisoup.hotdognalds.entity.Hotdog;
+import dev.chililisoup.hotdognalds.entity.FoodEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -102,11 +102,11 @@ public class GrillBlock extends Block {
     public void stepOn(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState onState, @NotNull Entity entity) {
         if (onState.getValue(LIT)
                 && Math.abs(entity.getY() - pos.getY() - 1) < 0.01
-                && (entity instanceof LivingEntity || entity instanceof Hotdog)
+                && (entity instanceof LivingEntity || entity instanceof FoodEntity)
         ) {
             if (level instanceof ServerLevel serverLevel)
                 entity.hurtServer(serverLevel, serverLevel.damageSources().hotFloor(), 1.0F);
-            if (entity instanceof Hotdog hotdog) hotdog.doCookEffect();
+            if (entity instanceof FoodEntity foodEntity) foodEntity.doCookEffect();
         }
 
         super.stepOn(level, pos, onState, entity);

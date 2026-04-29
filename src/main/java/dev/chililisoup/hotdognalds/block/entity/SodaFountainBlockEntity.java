@@ -8,6 +8,7 @@ import dev.chililisoup.hotdognalds.reg.ModParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
@@ -52,7 +53,9 @@ public class SodaFountainBlockEntity extends BlockEntity {
                 if (dispenser.isInactive()) continue;
 
                 Vec3 nozzlePos = bottomCenter.add(dispenser.pos(facing));
-                ModParticles.addColoredFall(level, nozzlePos, dispenser.colors[colorIndex]);
+                level.addParticle(ColorParticleOption.create(
+                        ModParticles.COLORED_FALL, dispenser.colors[colorIndex]
+                ), nozzlePos.x, nozzlePos.y, nozzlePos.z, 0, 0, 0);
             }
 
             return;

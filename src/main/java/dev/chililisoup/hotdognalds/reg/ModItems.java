@@ -10,10 +10,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.item.equipment.Equippable;
 
 import java.util.function.Function;
 
@@ -21,6 +23,7 @@ public final class ModItems {
     public static final Item HOTDOG;
     public static final Item CONDIMENT_DISPENSER;
     public static final Item CUP;
+    public static final Item DINER_HAT;
 
     static {
         HOTDOG = register(
@@ -56,6 +59,14 @@ public final class ModItems {
                 new Properties()
                         .stacksTo(16)
                         .component(ModComponents.CUP_CONTENTS, CupContents.EMPTY)
+        );
+
+        DINER_HAT = register(
+                "diner_hat",
+                Item::new,
+                new Properties()
+                        .stacksTo(1)
+                        .component(DataComponents.EQUIPPABLE, Equippable.builder(EquipmentSlot.HEAD).build())
         );
     }
 

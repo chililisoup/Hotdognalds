@@ -33,30 +33,9 @@ public class HotdogItem extends SpawnItem<Hotdog> implements ProjectileItem {
     @Override
     public @NotNull Component getName(@NotNull ItemStack itemStack) {
         HotdogContents contents = itemStack.getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG);
-        if (contents.cookAmt().isPresent()) return Component.translatable(
-                "item.hotdognalds.hotdog",
-                getDogPrefix(contents.cookAmt().get())
-        );
-
-        float bunCookAmt = contents.bunCookAmt().orElse(0F);
-        return bunCookAmt > 0 ?
-                Component.translatable("item.hotdognalds.hotdog.bun.tip", getBunPrefix(bunCookAmt)) :
-                Component.translatable("item.hotdognalds.hotdog.bun");
-    }
-
-    private static Component getDogPrefix(float cookAmt) {
-        if (cookAmt <= 0F) return Component.translatable("item.hotdognalds.hotdog.raw");
-        if (cookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.uncooked");
-        if (cookAmt <= 2F) return Component.translatable("item.hotdognalds.hotdog.cooked");
-        if (cookAmt < 3F) return Component.translatable("item.hotdognalds.hotdog.well_done");
-        return Component.translatable("item.hotdognalds.hotdog.congratulation");
-    }
-
-    private static Component getBunPrefix(float bunCookAmt) {
-        if (bunCookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.bun.tip.dry");
-        if (bunCookAmt <= 2F) return Component.translatable("item.hotdognalds.hotdog.bun.tip.toasted");
-        if (bunCookAmt < 3F) return Component.translatable("item.hotdognalds.hotdog.bun.tip.burnt");
-        return Component.translatable("item.hotdognalds.hotdog.bun.tip.blackened");
+        return contents.cookAmt().isPresent() ?
+                HotdogContents.getDogName(contents.cookAmt().get()) :
+                HotdogContents.getBunName(contents.bunCookAmt().orElse(0F));
     }
 
     @Override

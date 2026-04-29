@@ -1,6 +1,5 @@
 package dev.chililisoup.hotdognalds.item;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -84,21 +83,16 @@ public class SpawnItem<T extends Entity> extends Item {
             @NotNull Consumer<Component> builder,
             @NotNull TooltipFlag tooltipFlag
     ) {
-        if (this.requireSneakToPlace(itemStack)) builder.accept(Component
-                .translatable("item.hotdognalds.tip.sneak_to_place")
-                .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
-        );
+        if (this.requireSneakToPlace(itemStack))
+            builder.accept(Component.translatable("item.hotdognalds.tip.sneak_to_place"));
 
         TypedEntityData<?> entityData = itemStack.get(DataComponents.ENTITY_DATA);
         if (entityData == null) return;
-        if (entityData.copyTagWithoutId().getBooleanOr("Invulnerable", false)) {
-            builder.accept(Component
-                    .translatable("item.hotdognalds.tip.invulnerable")
-                    .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)
-            );
-        }
+        if (entityData.copyTagWithoutId().getBooleanOr("Invulnerable", false))
+            builder.accept(Component.translatable("item.hotdognalds.tip.invulnerable"));
     }
 
+    @FunctionalInterface
     public interface EntityCreator<T extends Entity> {
         T create(
                 ServerLevel serverLevel,

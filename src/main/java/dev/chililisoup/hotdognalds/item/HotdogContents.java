@@ -4,19 +4,26 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
 import dev.chililisoup.hotdognalds.reg.ModItems;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
-public record HotdogContents(Optional<Float> cookAmt, Optional<Float> bunCookAmt, Optional<Integer> sauce) {
+public record HotdogContents(Optional<Float> cookAmt, Optional<Float> bunCookAmt, Optional<Integer> sauce) implements TooltipProvider {
     public static final HotdogContents DOG = dog();
     public static final HotdogContents BUN = bun();
 
@@ -107,6 +114,45 @@ public record HotdogContents(Optional<Float> cookAmt, Optional<Float> bunCookAmt
     private static float roundCookAmt(float cookAmt) {
         return cookAmt >= 1F && cookAmt <= 2F ?
                 1F : Mth.floor(cookAmt * 4F) / 4F;
+    }
+
+    public static Component getDogName(float cookAmt) {
+        return Component.translatable(
+                "item.hotdognalds.hotdog",
+                getDogPrefix(cookAmt)
+        );
+    }
+
+    public static Component getBunName(float bunCookAmt) {
+        return bunCookAmt > 0 ?
+                Component.translatable("item.hotdognalds.hotdog.bun.tip", getBunPrefix(bunCookAmt)) :
+                Component.translatable("item.hotdognalds.hotdog.bun");
+    }
+
+    private static Component getDogPrefix(float cookAmt) {
+        if (cookAmt <= 0F) return Component.translatable("item.hotdognalds.hotdog.raw");
+        if (cookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.uncooked");
+        if (cookAmt <= 2F) return Component.translatable("item.hotdognalds.hotdog.cooked");
+        if (cookAmt < 3F) return Component.translatable("item.hotdognalds.hotdog.well_done");
+        return Component.translatable("item.hotdognalds.hotdog.congratulation");
+    }
+
+    private static Component getBunPrefix(float bunCookAmt) {
+        if (bunCookAmt < 1F) return Component.translatable("item.hotdognalds.hotdog.bun.tip.dry");
+        if (bunCookAmt <= 2F) return Component.translatable("item.hotdognalds.hotdog.bun.tip.toasted");
+        if (bunCookAmt < 3F) return Component.translatable("item.hotdognalds.hotdog.bun.tip.burnt");
+        return Component.translatable("item.hotdognalds.hotdog.bun.tip.blackened");
+    }
+
+    @Override
+    public void addToTooltip(
+            @NotNull Item.TooltipContext context,
+            @NotNull Consumer<Component> consumer,
+            @NotNull TooltipFlag flag,
+            @NotNull DataComponentGetter components
+    ) {
+        if (this.cookAmt.isPresent() && this.bunCookAmt.isPresent())
+            consumer.accept(getBunName(this.bunCookAmt.get()));
     }
 
     public Mutable toMutable() {

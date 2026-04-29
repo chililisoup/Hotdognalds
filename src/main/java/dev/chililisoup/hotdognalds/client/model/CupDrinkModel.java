@@ -37,6 +37,6 @@ public class CupDrinkModel extends EntityModel<CupRenderState> {
     @Override
     public void setupAnim(@NotNull CupRenderState state) {
         super.setupAnim(state);
-        this.drink.y = state.contents.fillLevel() * -4.5F;
+        this.drink.y = state.contents.fillLevel() * -4.75F;
     }
 }

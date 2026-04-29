@@ -5,6 +5,7 @@ import dev.chililisoup.hotdognalds.reg.ModItems;
 import dev.chililisoup.hotdognalds.reg.ModParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -103,7 +104,9 @@ public class CondimentDispenser extends Entity {
             if (this.isPumping()) {
                 Vec3 nozzlePos = this.nozzleFloorPos()
                         .add(0, 0.625 - this.pumpAmt * 0.25, 0);
-                ModParticles.addColoredFall(this.level(), nozzlePos, ARGB.opaque(this.getColor()));
+                this.level().addParticle(ColorParticleOption.create(
+                        ModParticles.COLORED_FALL, ARGB.opaque(this.getColor())
+                ), nozzlePos.x, nozzlePos.y, nozzlePos.z, 0, 0, 0);
             }
         } else if (this.pumpingTicks > 0 && --this.pumpingTicks == 0) {
             int color = ARGB.opaque(this.getColor());

@@ -4,6 +4,7 @@ import dev.chililisoup.hotdognalds.item.CupContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
 import dev.chililisoup.hotdognalds.reg.ModEntityDataSerializers;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
@@ -12,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,6 +51,14 @@ public class Cup extends FoodEntity implements CondimentCollector {
 
         cup.setContents(itemStack.getOrDefault(ModComponents.CUP_CONTENTS, CupContents.EMPTY));
         return cup;
+    }
+
+    @Override
+    protected void doClientCookEffect() {
+        CupContents contents = this.getContents();
+        this.level().addParticle(new DustParticleOptions(
+                contents.hasDrink() ? contents.drinkColor() : 0, 0.5F
+        ), this.getX(), this.getEyeY(), this.getZ(), 0.0, 1.0, 0.0);
     }
 
     @Override
@@ -92,14 +102,21 @@ public class Cup extends FoodEntity implements CondimentCollector {
             return false;
         if (this.isRemoved()) return true;
 
-        this.kill(level);
-        this.markHurt();
+        if (source.is(DamageTypes.HOT_FLOOR)) {
+            CupContents contents = this.getContents();
+            float fillLevel = contents.fillLevel();
+            if (fillLevel > 0) this.setContents(contents.withFillLevel(fillLevel - 0.005F * damage));
+            else if (this.random.nextFloat() > 0.98F) this.placeFire(level);
+        } else {
+            this.kill(level);
+            this.markHurt();
 
-        if (!source.isCreativePlayer()) {
-            ItemStack drop = this.getItemStack();
-            Block.popResource(this.level(), this.blockPosition(), drop);
+            if (!source.isCreativePlayer()) {
+                ItemStack drop = this.getItemStack();
+                Block.popResource(this.level(), this.blockPosition(), drop);
+            }
+            this.playTakeSound();
         }
-        this.playTakeSound();
 
         return true;
     }
@@ -138,7 +155,7 @@ public class Cup extends FoodEntity implements CondimentCollector {
 
     @Override
     protected ItemStack getItemStack() {
-        return this.getContents().getItemStack();
+        return this.updateItemStack(this.getContents().getItemStack());
     }
 
     @Override

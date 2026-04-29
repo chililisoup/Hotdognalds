@@ -6,6 +6,7 @@ import dev.chililisoup.hotdognalds.block.CrateBlock;
 import dev.chililisoup.hotdognalds.block.entity.CrateBlockEntity;
 import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
+import dev.chililisoup.hotdognalds.reg.ModItems;
 import it.unimi.dsi.fastutil.HashCommon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -106,6 +107,15 @@ public class CrateRenderer implements BlockEntityRenderer<CrateBlockEntity, Crat
 
         AABB box = state.itemStackRenderState.getModelBoundingBox();
         state.yOffset = (float) -box.minY / 4F;
+
+        if (itemStack.is(ModItems.DINER_HAT)) {
+            state.yOffset += 0.2F;
+            state.scale = 0.67F;
+            state.zCount = 2;
+            state.xCount = 2;
+
+            return;
+        }
 
         if (itemStack.get(ModComponents.HOTDOG_CONTENTS) instanceof HotdogContents contents) {
             state.yRot += 90F;

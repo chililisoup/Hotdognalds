@@ -1,33 +1,41 @@
 package dev.chililisoup.hotdognalds.reg;
 
+import com.mojang.serialization.MapCodec;
 import dev.chililisoup.hotdognalds.Hotdognalds;
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.util.ARGB;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+
+import java.util.function.Function;
 
 public final class ModParticles {
-    public static final SimpleParticleType COLORED_FALL = register("colored_fall");
-    public static final SimpleParticleType COLORED_LAND = register("colored_land");
+    public static final ParticleType<ColorParticleOption> COLORED_FALL = register(
+            "colored_fall", ColorParticleOption::codec, ColorParticleOption::streamCodec
+    );
+    public static final ParticleType<ColorParticleOption> COLORED_LAND = register(
+            "colored_land", ColorParticleOption::codec, ColorParticleOption::streamCodec
+    );
 
-    private static SimpleParticleType register(String name) {
-        return Registry.register(
-                BuiltInRegistries.PARTICLE_TYPE, Hotdognalds.id(name), new SimpleParticleType(false)
-        );
+    private static <T extends ParticleType<?>> T register(String name, T particleType) {
+        return Registry.register(BuiltInRegistries.PARTICLE_TYPE, Hotdognalds.id(name), particleType);
     }
 
-    public static void addColoredFall(Level level, Vec3 pos, int color) {
-        level.addParticle(
-                COLORED_FALL,
-                pos.x,
-                pos.y,
-                pos.z,
-                ARGB.redFloat(color),
-                ARGB.greenFloat(color),
-                ARGB.blueFloat(color)
-        );
+    private static SimpleParticleType register(String name) {
+        return register(name, FabricParticleTypes.simple());
+    }
+
+    private static <T extends ParticleOptions> ParticleType<T> register(
+            String name,
+            Function<ParticleType<T>, MapCodec<T>> codec,
+            Function<ParticleType<T>, StreamCodec<? super RegistryFriendlyByteBuf, T>> streamCodec
+    ) {
+        return register(name, FabricParticleTypes.complex(codec, streamCodec));
     }
 
     public static void init() {}

@@ -4,13 +4,10 @@ import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
 import dev.chililisoup.hotdognalds.reg.ModEntityDataSerializers;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -22,9 +19,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -56,26 +51,22 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
         return hotdog;
     }
 
-    public void doCookEffect() {
-        if (this.getInBlockState().getBlock() instanceof BaseFireBlock) return;
+    @Override
+    protected void doClientCookEffect() {
+        float halfWidth = this.hasBun() ? 0.10375F : 0.0725F;
+        float length = this.hasBun() ? 0.375F : 0.5F;
 
-        if (this.level().isClientSide()) {
-            float halfWidth = this.hasBun() ? 0.10375F : 0.0725F;
-            float length = this.hasBun() ? 0.375F : 0.5F;
+        float xd = this.random.nextBoolean() ? -halfWidth : halfWidth;
+        float zd = (this.random.nextFloat() - 0.5F) * length;
 
-            float xd = this.random.nextBoolean() ? -halfWidth : halfWidth;
-            float zd = (this.random.nextFloat() - 0.5F) * length;
+        float angle = Mth.PI * this.getYRot() / 180F;
+        float sin = Mth.sin(angle);
+        float cos = Mth.cos(angle);
 
-            float angle = Mth.PI * this.getYRot() / 180F;
-            float sin = Mth.sin(angle);
-            float cos = Mth.cos(angle);
+        float xn = xd * cos - zd * sin;
+        float zn = xd * sin + zd * cos;
 
-            float xn = xd * cos - zd * sin;
-            float zn = xd * sin + zd * cos;
-
-            this.level().addParticle(ParticleTypes.SMALL_FLAME, this.getX() + xn, this.getY(), this.getZ() + zn, 0.0, 0.0, 0.0);
-        } else if (this.random.nextFloat() > 0.95F)
-            this.playSound(SoundEvents.GENERIC_BURN, 0.125F, 0.5F);
+        this.level().addParticle(ParticleTypes.SMALL_FLAME, this.getX() + xn, this.getY(), this.getZ() + zn, 0.0, 0.0, 0.0);
     }
 
     @Override
@@ -180,15 +171,6 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
         ));
     }
 
-    private void placeFire(@NotNull ServerLevel level) {
-        BlockPos blockPos = this.blockPosition();
-        if (BaseFireBlock.canBePlacedAt(level, blockPos, Direction.DOWN)) {
-            level.setBlock(blockPos, BaseFireBlock.getState(level, blockPos), 11);
-            this.playSound(SoundEvents.FIRECHARGE_USE);
-            level.gameEvent(this, GameEvent.BLOCK_PLACE, blockPos);
-        }
-    }
-
     @Override
     public boolean hurtServer(@NotNull ServerLevel level, @NotNull DamageSource source, float damage) {
         if (this.isInvulnerableToBase(source)) return false;
@@ -231,7 +213,7 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
 
     @Override
     protected ItemStack getItemStack() {
-        return this.getContents().getRoundedItemStack();
+        return this.updateItemStack(this.getContents().getRoundedItemStack());
     }
 
     @Override
