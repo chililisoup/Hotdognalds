@@ -4,6 +4,7 @@
     "hotdognalds:grill",
     "hotdognalds:crate",
     "hotdognalds:soda_fountain",
-    "hotdognalds:counter"
+    "hotdognalds:counter",
+    "hotdognalds:trash_can"
   ]
 }

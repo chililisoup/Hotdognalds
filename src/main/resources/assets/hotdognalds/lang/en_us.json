@@ -34,5 +34,7 @@
   "lore.hotdognalds.soda_fountain": "Dispenses drinks into cups. Has a random variant when placed.",
   "block.hotdognalds.counter": "Counter",
   "lore.hotdognalds.counter": "A decorative counter block that shapes similarly to stairs.",
+  "block.hotdognalds.trash_can": "Trash Can",
+  "lore.hotdognalds.trash_can": "A block that you can place items into to quickly and permanently get rid of.",
   "itemGroup.hotdognalds.main": "Hotdognald's"
 }

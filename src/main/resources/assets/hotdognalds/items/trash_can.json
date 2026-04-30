@@ -1,0 +1,15 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "hotdognalds:block/trash_can"
+      },
+      {
+        "type": "minecraft:model",
+        "model": "hotdognalds:block/trash_can_top_z"
+      }
+    ]
+  }
+}

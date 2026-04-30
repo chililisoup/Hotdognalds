@@ -1,0 +1,51 @@
+{
+  "format_version": "1.21.11",
+  "credit": "Made with Blockbench",
+  "parent": "block/block",
+  "texture_size": [32, 32],
+  "textures": {
+    "0": "hotdognalds:block/trash_can",
+    "particle": "hotdognalds:block/trash_can"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ 75, 315, 0 ],
+      "translation": [ 0, 2.5, 0],
+      "scale": [ 0.375, 0.375, 0.375 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 315, 0 ],
+      "translation": [ 0, 0, 0],
+      "scale": [ 0.4, 0.4, 0.4 ]
+    }
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [2, 0, 2],
+      "to": [14, 10, 14],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 5, 8]},
+      "faces": {
+        "north": {"uv": [10, 0, 16, 5], "texture": "#0"},
+        "east": {"uv": [10, 0, 16, 5], "texture": "#0"},
+        "south": {"uv": [10, 0, 16, 5], "texture": "#0"},
+        "west": {"uv": [10, 0, 16, 5], "texture": "#0"},
+        "down": {"uv": [16, 5, 10, 11], "texture": "#0", "cullface": "down"}
+      }
+    },
+    {
+      "name": "rim",
+      "from": [1, 10, 1],
+      "to": [15, 12, 15],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 11, 8]},
+      "faces": {
+        "north": {"uv": [8, 0.5, 9, 7.5], "rotation": 90, "texture": "#0"},
+        "east": {"uv": [8, 8.5, 9, 15.5], "rotation": 90, "texture": "#0"},
+        "south": {"uv": [8, 0.5, 9, 7.5], "rotation": 90, "texture": "#0"},
+        "west": {"uv": [8, 8.5, 9, 15.5], "rotation": 90, "texture": "#0"},
+        "up": {"uv": [0, 0.5, 7, 7.5], "texture": "#0"},
+        "down": {"uv": [7, 8.5, 0, 15.5], "texture": "#0"}
+      }
+    }
+  ]
+}

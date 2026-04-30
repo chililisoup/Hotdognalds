@@ -117,7 +117,7 @@ public abstract class FoodEntity extends Entity {
 
     @Override
     protected @NotNull Component getTypeName() {
-        return this.getItemStack().getHoverName();
+        return this.getItemStack().getItemName();
     }
 
     @Override

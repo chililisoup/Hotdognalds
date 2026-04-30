@@ -37,16 +37,14 @@ public class SodaFountainBlock extends BaseEntityBlock {
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final IntegerProperty VARIANT = ModBlockStateProperties.SODA_FOUNTAIN_VARIANT;
     public static final int VARIANT_COUNT = VARIANT.getPossibleValues().size();
-    private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(
-            Shapes.or(
-                    Block.column(16, 0, 2),
-                    Block.boxZ(16, 2, 16, 5, 16),
-                    Block.box(0.5, 12, 0, 3.5, 16, 5),
-                    Block.box(4.5, 12, 0, 7.5, 16, 5),
-                    Block.box(8.5, 12, 0, 11.5, 16, 5),
-                    Block.box(12.5, 12, 0, 15.5, 16, 5)
-            )
-    );
+    private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
+            Block.column(16, 0, 2),
+            Block.boxZ(16, 2, 16, 5, 16),
+            Block.box(0.5, 12, 0, 3.5, 16, 5),
+            Block.box(4.5, 12, 0, 7.5, 16, 5),
+            Block.box(8.5, 12, 0, 11.5, 16, 5),
+            Block.box(12.5, 12, 0, 15.5, 16, 5)
+    ));
 
     @Override
     public @NotNull MapCodec<SodaFountainBlock> codec() {

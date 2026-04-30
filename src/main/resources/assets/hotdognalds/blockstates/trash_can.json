@@ -1,0 +1,13 @@
+{
+  "multipart": [
+    { "apply": { "model": "hotdognalds:block/trash_can" } },
+    {
+      "when": { "axis": "x" },
+      "apply": { "model": "hotdognalds:block/trash_can_top_x" }
+    },
+    {
+      "when": { "axis": "z" },
+      "apply": { "model": "hotdognalds:block/trash_can_top_z" }
+    }
+  ]
+}

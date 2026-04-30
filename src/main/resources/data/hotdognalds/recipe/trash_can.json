@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": "minecraft:resin_brick",
+    "I": "#c:stones"
+  },
+  "pattern": [
+    "###",
+    "III",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hotdognalds:trash_can"
+  }
+}

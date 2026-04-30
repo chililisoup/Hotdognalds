@@ -34,18 +34,16 @@ public class GrillBlock extends Block {
     public static final MapCodec<GrillBlock> CODEC = simpleCodec(GrillBlock::new);
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(
-            Shapes.or(
-                    Block.column(16, 3, 10),
-                    Block.boxZ(16, 10, 16, 2, 16),
-                    Block.boxZ(16, 16, 19, 14, 16),
-                    Block.boxZ(16, 12, 14, -1, 2),
-                    Block.box(2, 0, 2, 3, 3, 4),
-                    Block.box(13, 0, 2, 14, 3, 4),
-                    Block.box(2, 0, 12, 3, 3, 14),
-                    Block.box(13, 0, 12, 14, 3, 14)
-            )
-    );
+    private static final Map<Direction, VoxelShape> SHAPES = Shapes.rotateHorizontal(Shapes.or(
+            Block.column(16, 3, 10),
+            Block.boxZ(16, 10, 16, 2, 16),
+            Block.boxZ(16, 16, 19, 14, 16),
+            Block.boxZ(16, 12, 14, -1, 2),
+            Block.box(2, 0, 2, 3, 3, 4),
+            Block.box(13, 0, 2, 14, 3, 4),
+            Block.box(2, 0, 12, 3, 3, 14),
+            Block.box(13, 0, 12, 14, 3, 14)
+    ));
 
     @Override
     public @NotNull MapCodec<GrillBlock> codec() {

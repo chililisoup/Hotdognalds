@@ -27,6 +27,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+
 public class Hotdog extends FoodEntity implements CondimentCollector {
     private static final EntityDataAccessor<HotdogContents> DATA_CONTENTS = SynchedEntityData.defineId(
             Hotdog.class, ModEntityDataSerializers.HOTDOG_CONTENTS
@@ -83,6 +85,8 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
                     this.setMutable(handContents.toMutable().bunCookAmt(
                             this.getContents().bunCookAmt().orElse(0F)
                     ));
+                    if (!this.hasCustomName())
+                        this.setCustomName(handStack.getCustomName());
                     handStack.consume(1, player);
 
                     this.playPlaceSound();

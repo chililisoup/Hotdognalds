@@ -1,10 +1,7 @@
 package dev.chililisoup.hotdognalds.reg;
 
 import dev.chililisoup.hotdognalds.Hotdognalds;
-import dev.chililisoup.hotdognalds.block.CounterBlock;
-import dev.chililisoup.hotdognalds.block.CrateBlock;
-import dev.chililisoup.hotdognalds.block.GrillBlock;
-import dev.chililisoup.hotdognalds.block.SodaFountainBlock;
+import dev.chililisoup.hotdognalds.block.*;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.core.Registry;
@@ -62,6 +59,12 @@ public final class ModBlocks {
     public static final Block COUNTER = register(
             "counter",
             CounterBlock::new,
+            Properties.ofFullCopy(GRILL)
+    );
+
+    public static final Block TRASH_CAN = register(
+            "trash_can",
+            TrashCanBlock::new,
             Properties.ofFullCopy(GRILL)
     );
 
