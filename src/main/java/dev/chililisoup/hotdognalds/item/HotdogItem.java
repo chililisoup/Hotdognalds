@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,8 +54,31 @@ public class HotdogItem extends SpawnItem<Hotdog> implements ProjectileItem {
                 0.5F,
                 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F)
         );
+
         if (level instanceof ServerLevel serverLevel) {
-            Projectile.spawnProjectileFromRotation(HotdogProjectile::create, serverLevel, itemStack, player, 0.0F, 1.5F, 1.0F);
+            int numProjectiles = EnchantmentHelper.processProjectileCount(serverLevel, itemStack, player, 1);
+            float maxAngle = EnchantmentHelper.processProjectileSpread(serverLevel, itemStack, player, 0.0F);
+            float angleStep = numProjectiles == 1 ? 0.0F : 2.0F * maxAngle / (numProjectiles - 1);
+            float angleOffset = (numProjectiles - 1) % 2 * angleStep / 2.0F;
+            float direction = 1.0F;
+            boolean forceNoPickup = player.hasInfiniteMaterials();
+
+            for (int i = 0; i < numProjectiles; i++) {
+                int idk = (i + 1) / 2;
+                float angle = angleOffset + direction * idk * angleStep;
+                direction = -direction;
+
+                HotdogProjectile projectile = Projectile.spawnProjectile(
+                        HotdogProjectile.create(serverLevel, player, itemStack),
+                        serverLevel,
+                        itemStack,
+                        projectileEntity -> projectileEntity.shootFromRotation(
+                                player, player.getXRot(), player.getYRot() + angle, 0.0F, 1.5F, 1.0F
+                        )
+                );
+
+                if (forceNoPickup || i > 0) projectile.setPickup(false);
+            }
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));

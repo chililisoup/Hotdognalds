@@ -52,9 +52,7 @@ public class CrateBlockEntity extends BlockEntity implements ContainerSingleItem
 
     @Override
     public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        tag.storeNullable("item", ItemStack.CODEC, this.itemStack.isEmpty() ? null : this.itemStack);
-        return tag;
+        return this.saveCustomOnly(registries);
     }
 
     @Override

@@ -5,6 +5,7 @@ import dev.chililisoup.hotdognalds.reg.ModComponents;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
 import dev.chililisoup.hotdognalds.reg.ModItems;
 import dev.chililisoup.hotdognalds.reg.ModParticles;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ColorParticleOption;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -19,12 +20,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class HotdogProjectile extends ThrowableItemProjectile {
+    private boolean pickup = true;
+
     public HotdogProjectile(EntityType<HotdogProjectile> type, Level level) {
         super(type, level);
     }
@@ -45,6 +50,10 @@ public class HotdogProjectile extends ThrowableItemProjectile {
         HotdogProjectile projectile = create(level, owner.getX(), owner.getEyeY() - 0.1F, owner.getZ(), itemStack);
         projectile.setOwner(owner);
         return projectile;
+    }
+
+    public void setPickup(boolean pickup) {
+        this.pickup = pickup;
     }
 
     @Override
@@ -89,7 +98,6 @@ public class HotdogProjectile extends ThrowableItemProjectile {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult hitResult) {
         super.onHitEntity(hitResult);
-
         if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
         HotdogContents contents = this.getItem().get(ModComponents.HOTDOG_CONTENTS);
@@ -105,6 +113,11 @@ public class HotdogProjectile extends ThrowableItemProjectile {
         super.onHit(hitResult);
         if (!(this.level() instanceof ServerLevel serverLevel)) return;
 
+        serverLevel.broadcastEntityEvent(this, EntityEvent.DEATH);
+        this.discard();
+        if (!this.pickup) return;
+
+        Direction face = Direction.getApproximateNearest(this.getDeltaMovement().reverse());
         ItemStack item = this.getItem();
         HotdogContents contents = item.get(ModComponents.HOTDOG_CONTENTS);
         if (contents != null) {
@@ -113,14 +126,24 @@ public class HotdogProjectile extends ThrowableItemProjectile {
             if (contents.hasDog() && contents.bunCookAmt().isPresent()) {
                 mutable.takeBun();
                 HotdogContents bun = HotdogContents.bun(contents.bunCookAmt().get());
-                Block.popResource(serverLevel, this.blockPosition(), bun.getRoundedItemStack());
+                Block.popResourceFromFace(serverLevel, this.blockPosition(), face, bun.getRoundedItemStack());
             }
 
             item.set(ModComponents.HOTDOG_CONTENTS, mutable.toImmutable());
         }
 
-        Block.popResource(serverLevel, this.blockPosition(), item);
-        serverLevel.broadcastEntityEvent(this, EntityEvent.DEATH);
-        this.discard();
+        Block.popResourceFromFace(serverLevel, this.blockPosition(), face, item);
+    }
+
+    @Override
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        output.putBoolean("pickup", this.pickup);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(@NotNull ValueInput input) {
+        super.readAdditionalSaveData(input);
+        this.pickup = input.getBooleanOr("pickup", false);
     }
 }
