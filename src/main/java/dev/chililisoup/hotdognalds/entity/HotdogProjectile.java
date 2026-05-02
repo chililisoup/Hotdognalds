@@ -1,5 +1,6 @@
 package dev.chililisoup.hotdognalds.entity;
 
+import com.mojang.datafixers.util.Pair;
 import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
 import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
@@ -26,6 +27,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class HotdogProjectile extends ThrowableItemProjectile {
     private boolean pickup = true;
@@ -52,6 +54,28 @@ public class HotdogProjectile extends ThrowableItemProjectile {
         return projectile;
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.isRemoved() || !this.level().isClientSide()) return;
+
+        Pair<ParticleOptions, Integer> sauce = this.getSauce();
+        if (sauce == null) return;
+
+        if (sauce.getSecond() > this.random.nextInt(6)) {
+            Vec3 dir = this.getDeltaMovement().scale(0.5);
+            this.level().addParticle(
+                    sauce.getFirst(),
+                    this.getX(),
+                    this.getY(),
+                    this.getZ(),
+                    dir.x + 0.1F * (this.random.nextFloat() - 0.5),
+                    dir.y + 0.1F * (this.random.nextFloat() - 0.5),
+                    dir.z + 0.1F * (this.random.nextFloat() - 0.5)
+            );
+        }
+    }
+
     public void setPickup(boolean pickup) {
         this.pickup = pickup;
     }
@@ -66,6 +90,17 @@ public class HotdogProjectile extends ThrowableItemProjectile {
         return item.isEmpty() ? ParticleTypes.ITEM_SNOWBALL : new ItemParticleOption(ParticleTypes.ITEM, ItemStackTemplate.fromNonEmptyStack(item));
     }
 
+    private @Nullable Pair<ParticleOptions, Integer> getSauce() {
+        HotdogContents contents = this.getItem().get(ModComponents.HOTDOG_CONTENTS);
+        if (contents == null) return null;
+
+        int sauceAmount = contents.sauceAmount();
+        return sauceAmount > 0 ? Pair.of(
+                ColorParticleOption.create(ModParticles.COLORED_FALL, contents.sauceColor()),
+                sauceAmount
+        ) : null;
+    }
+
     @Override
     public void handleEntityEvent(byte id) {
         if (id != EntityEvent.DEATH) return;
@@ -75,15 +110,12 @@ public class HotdogProjectile extends ThrowableItemProjectile {
                 foodParticle, this.getX(), this.getY(), this.getZ(), 0.0, 0.0, 0.0
         );
 
-        HotdogContents contents = this.getItem().get(ModComponents.HOTDOG_CONTENTS);
-        if (contents == null) return;
+        Pair<ParticleOptions, Integer> sauce = this.getSauce();
+        if (sauce == null) return;
 
-        int sauceAmount = contents.sauceAmount();
-        if (sauceAmount <= 0) return;
-
-        int sauceColor = contents.sauceColor();
+        ParticleOptions sauceParticle = sauce.getFirst();
+        int sauceAmount = sauce.getSecond();
         Vec3 dir = this.getDeltaMovement().scale(-0.1);
-        ParticleOptions sauceParticle = ColorParticleOption.create(ModParticles.COLORED_FALL, sauceColor);
         for (int i = 0; i < 5 * sauceAmount; i++) this.level().addParticle(
                 sauceParticle,
                 this.getX(),
@@ -125,8 +157,10 @@ public class HotdogProjectile extends ThrowableItemProjectile {
 
             if (contents.hasDog() && contents.bunCookAmt().isPresent()) {
                 mutable.takeBun();
-                HotdogContents bun = HotdogContents.bun(contents.bunCookAmt().get());
-                Block.popResourceFromFace(serverLevel, this.blockPosition(), face, bun.createRoundedItem());
+
+                ItemStack bunStack = item.copy();
+                bunStack.set(ModComponents.HOTDOG_CONTENTS, contents.toMutable().takeDog().toImmutable());
+                Block.popResourceFromFace(serverLevel, this.blockPosition(), face, bunStack);
             }
 
             item.set(ModComponents.HOTDOG_CONTENTS, mutable.toImmutable());

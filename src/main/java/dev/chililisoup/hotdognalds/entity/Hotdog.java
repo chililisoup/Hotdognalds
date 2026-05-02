@@ -47,8 +47,6 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
 
     @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 location) {
-        if (player.isSpectator()) return InteractionResult.SUCCESS;
-
         ItemStack handStack = player.getItemInHand(hand);
         boolean offHand = hand == InteractionHand.OFF_HAND;
 
@@ -86,21 +84,7 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
             }
         }
 
-        ItemStack hotdogStack = this.getItem();
-        if (!handStack.isEmpty() && !ItemStack.isSameItemSameComponents(handStack, hotdogStack))
-            return InteractionResult.PASS;
-
-        if (!this.isRemoved() && player.level() instanceof ServerLevel serverLevel) {
-            this.kill(serverLevel);
-            this.markHurt();
-
-            if (handStack.isEmpty()) player.setItemInHand(hand, hotdogStack);
-            else player.addItem(hotdogStack);
-
-            this.playTakeSound();
-        }
-
-        return InteractionResult.SUCCESS_SERVER;
+        return super.interact(player, hand, location);
     }
 
     public HotdogContents getContents() {

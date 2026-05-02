@@ -7,18 +7,14 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gamerules.GameRules;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class Cup extends FoodEntity implements CondimentCollector {
@@ -50,25 +46,6 @@ public class Cup extends FoodEntity implements CondimentCollector {
         }
 
         super.tick();
-    }
-
-    @Override
-    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 location) {
-        if (player.isSpectator()) return InteractionResult.SUCCESS;
-
-        if (!this.isRemoved() && player.level() instanceof ServerLevel serverLevel) {
-            this.kill(serverLevel);
-            this.markHurt();
-
-            ItemStack cupStack = this.getItem();
-            if (hand == InteractionHand.MAIN_HAND && player.getItemInHand(hand).isEmpty())
-                player.setItemInHand(hand, cupStack);
-            else player.addItem(cupStack);
-
-            this.playTakeSound();
-        }
-
-        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override

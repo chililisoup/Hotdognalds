@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 @Environment(EnvType.CLIENT)
 public class ColoredFallAndLandParticle extends DripParticle.FallAndLandParticle {
+    private static final float GRAVITY = 0.02F;
+
     public ColoredFallAndLandParticle(
             ColorParticleOption options,
             ClientLevel level,
@@ -75,7 +77,7 @@ public class ColoredFallAndLandParticle extends DripParticle.FallAndLandParticle
             ColoredFallAndLandParticle particle = new ColoredFallAndLandParticle(
                     options, level, x, y, z, xAux, yAux, zAux, this.sprite.get(random)
             );
-            particle.gravity = 0.01F;
+            particle.gravity = GRAVITY;
             particle.setColor(options.getRed(), options.getGreen(), options.getBlue());
             particle.setAlpha(options.getAlpha());
             return particle;
@@ -120,7 +122,7 @@ public class ColoredFallAndLandParticle extends DripParticle.FallAndLandParticle
                 ColoredLandParticle particle = new ColoredLandParticle(
                         level, x, y, z, this.sprite.get(random)
                 );
-                particle.gravity = 0.01F;
+                particle.gravity = GRAVITY;
                 particle.setLifetime((int) (32.0 / (random.nextFloat() * 0.8 + 0.2)));
                 particle.setColor(options.getRed(), options.getGreen(), options.getBlue());
                 particle.setAlpha(options.getAlpha());

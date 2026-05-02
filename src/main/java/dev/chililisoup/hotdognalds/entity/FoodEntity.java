@@ -8,6 +8,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -94,6 +96,22 @@ public abstract class FoodEntity extends Entity {
     @Override
     protected double getDefaultGravity() {
         return 0.08;
+    }
+
+    @Override
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 location) {
+        if (!this.isRemoved() && player.level() instanceof ServerLevel serverLevel) {
+            this.kill(serverLevel);
+            this.markHurt();
+
+            ItemStack item = this.getItem();
+            if (player.getItemInHand(hand).isEmpty()) player.setItemInHand(hand, item);
+            else player.addItem(item);
+
+            this.playTakeSound();
+        }
+
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     public void doCookEffect() {
