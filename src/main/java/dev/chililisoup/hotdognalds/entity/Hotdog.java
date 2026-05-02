@@ -67,10 +67,13 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
                 return InteractionResult.SUCCESS_SERVER;
             }
         } else if (this.hasBun() && player.isShiftKeyDown()) {
-            ItemStack hotdogStack = this.getMutable().takeBun().toImmutable().createRoundedItem();
+            ItemStack hotdogStack = this.getItem();
+            this.getMutable().takeBun().toImmutable().roundAndApplyToItem(hotdogStack);
             if ((!offHand && handStack.isEmpty()) || ItemStack.isSameItemSameComponents(handStack, hotdogStack)) {
                 if (!this.isRemoved() && !player.level().isClientSide()) {
                     this.setMutable(this.getMutable().takeDog());
+
+
 
                     if (handStack.isEmpty()) {
                         if (offHand) player.addItem(hotdogStack);
@@ -180,13 +183,9 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
         return ModItems.HOTDOG;
     }
 
-    private ItemStack getItemRaw() {
-        return super.getItem();
-    }
-
     @Override
     protected ItemStack getItem() {
-        ItemStack stack = this.getItemRaw().copy();
+        ItemStack stack = super.getItem();
         HotdogContents.roundItem(stack);
         return stack;
     }

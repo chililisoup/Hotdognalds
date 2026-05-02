@@ -44,6 +44,7 @@ public class HotdogRenderer extends EntityRenderer<Hotdog, HotdogRenderState> {
         super.extractRenderState(hotdog, state, partialTick);
         state.yRot = Mth.rotLerp(partialTick, hotdog.yRotO, hotdog.getYRot());
         state.contents = hotdog.getContents();
+        state.hasFoil = hotdog.hasFoil();
     }
 
     @Override

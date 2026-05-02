@@ -44,6 +44,7 @@ public class CupRenderer extends EntityRenderer<Cup, CupRenderState> {
         super.extractRenderState(cup, state, partialTick);
         state.yRot = Mth.rotLerp(partialTick, cup.yRotO, cup.getYRot());
         state.contents = cup.getContents().withFillLevel(cup.getFillLevel(partialTick));
+        state.hasFoil = cup.hasFoil();
     }
 
     @Override

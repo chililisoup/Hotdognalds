@@ -113,13 +113,9 @@ public class Cup extends FoodEntity implements CondimentCollector {
         return ModItems.CUP;
     }
 
-    private ItemStack getItemRaw() {
-        return super.getItem();
-    }
-
     @Override
     protected ItemStack getItem() {
-        ItemStack stack = this.getItemRaw().copy();
+        ItemStack stack = super.getItem();
         CupContents.updateItem(stack);
         return stack;
     }

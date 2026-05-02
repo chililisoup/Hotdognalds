@@ -39,10 +39,10 @@ public final class BaseCupRenderer {
             SubmitNodeCollector submitNodeCollector,
             int overlayCoords
     ) {
-        SubmitHelper<CupRenderState> helper = new SubmitHelper<>(state, poseStack, submitNodeCollector, overlayCoords);
+        SubmitHelper<CupRenderState> helper = new SubmitHelper<>(state, poseStack, submitNodeCollector, state.hasFoil, overlayCoords);
 
-        helper.submitTranslucentTextureModel(this.model, TEXTURE);
-        if (state.contents.hasDrink()) helper.submitColoredTextureModel(
+        helper.submitTranslucentTextureModelPart(this.model, TEXTURE);
+        if (state.contents.hasDrink()) helper.submitBaseColoredTextureModel(
                 this.drinkModel, TEXTURE, state.contents.drinkColor()
         );
     }

@@ -134,12 +134,20 @@ public abstract class FoodEntity extends Entity {
 
     protected abstract Item getDefaultItem();
 
-    protected ItemStack getItem() {
+    protected ItemStack getItemRaw() {
         return this.getEntityData().get(DATA_ITEM);
+    }
+
+    protected ItemStack getItem() {
+        return this.getItemRaw().copy();
     }
 
     protected void setItem(ItemStack stack) {
         this.getEntityData().set(DATA_ITEM, stack);
+    }
+
+    public boolean hasFoil() {
+        return this.getItemRaw().hasFoil();
     }
 
     @Override

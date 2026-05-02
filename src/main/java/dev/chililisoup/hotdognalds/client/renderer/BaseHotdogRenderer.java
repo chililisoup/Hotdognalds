@@ -46,7 +46,7 @@ public final class BaseHotdogRenderer {
             SubmitNodeCollector submitNodeCollector,
             int overlayCoords
     ) {
-        SubmitHelper<HotdogRenderState> helper = new SubmitHelper<>(state, poseStack, submitNodeCollector, overlayCoords);
+        SubmitHelper<HotdogRenderState> helper = new SubmitHelper<>(state, poseStack, submitNodeCollector, state.hasFoil, overlayCoords);
 
         boolean hasDog = state.contents.cookAmt().isPresent();
         if (hasDog) this.submitBlendedCookModel(helper, this.model, state.contents.cookAmt().get());
@@ -55,7 +55,7 @@ public final class BaseHotdogRenderer {
         if (hasBun) this.submitBlendedCookModel(helper, this.bunModel, state.contents.bunCookAmt().get());
 
         // Submit red bun for nonsense hotdog contents
-        if (!hasDog && !hasBun) helper.submitColoredTextureModel(this.bunModel, RAW_TEXTURE, 0xFFFF0000);
+        if (!hasDog && !hasBun) helper.submitColoredTextureModelPart(this.bunModel, RAW_TEXTURE, 0xFFFF0000);
 
         int sauceAmount = state.contents.sauceAmount();
         if (sauceAmount > 0) {
@@ -63,18 +63,18 @@ public final class BaseHotdogRenderer {
             if (sauceAmount > 2) sauceTexture = BURNT_TEXTURE;
             else if (sauceAmount > 1) sauceTexture = COOKED_TEXTURE;
             else sauceTexture = RAW_TEXTURE;
-            helper.submitColoredTextureModel(this.sauceModel, sauceTexture, state.contents.sauceColor());
+            helper.submitColoredTextureModelPart(this.sauceModel, sauceTexture, state.contents.sauceColor());
         }
     }
 
     private void submitBlendedCookModel(SubmitHelper<HotdogRenderState> helper, Model<HotdogRenderState> model, float cookAmt) {
         if (cookAmt < 1F)
-            helper.submitBlendedTextureModel(model, RAW_TEXTURE, COOKED_TEXTURE, cookAmt);
+            helper.submitBlendedTextureModelPart(model, RAW_TEXTURE, COOKED_TEXTURE, cookAmt);
         else if (cookAmt <= 2F)
-            helper.submitBaseTextureModel(model, COOKED_TEXTURE);
+            helper.submitTextureModelPart(model, COOKED_TEXTURE);
         else if (cookAmt < 3F)
-            helper.submitBlendedTextureModel(model, COOKED_TEXTURE, BURNT_TEXTURE, cookAmt - 2F);
+            helper.submitBlendedTextureModelPart(model, COOKED_TEXTURE, BURNT_TEXTURE, cookAmt - 2F);
         else
-            helper.submitBaseTextureModel(model, BURNT_TEXTURE);
+            helper.submitTextureModelPart(model, BURNT_TEXTURE);
     }
 }

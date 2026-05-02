@@ -49,6 +49,7 @@ public class CupSpecialRenderer implements SpecialModelRenderer<DataComponentMap
         state.contents = components != null ?
                 components.getOrDefault(ModComponents.CUP_CONTENTS, CupContents.EMPTY) :
                 CupContents.EMPTY;
+        state.hasFoil = hasFoil;
 
         this.baseRenderer.submit(state, poseStack, submitNodeCollector, overlayCoords);
 

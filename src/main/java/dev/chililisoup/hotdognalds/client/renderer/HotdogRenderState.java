@@ -9,4 +9,5 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 public class HotdogRenderState extends EntityRenderState {
     public float yRot;
     public HotdogContents contents;
+    public boolean hasFoil;
 }

@@ -49,6 +49,7 @@ public class HotdogSpecialRenderer implements SpecialModelRenderer<DataComponent
         state.contents = components != null ?
                 components.getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG) :
                 HotdogContents.DOG;
+        state.hasFoil = hasFoil;
 
         this.baseRenderer.submit(state, poseStack, submitNodeCollector, overlayCoords);
 
