@@ -15,14 +15,14 @@ import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class CupItem extends SpawnItem<Cup> {
+public class CupItem extends FoodEntityItem<Cup> {
     private static final float CONSUME_SECONDS = 3F;
     private static final int CONSUME_TICKS = Math.round(CONSUME_SECONDS * 20F) + 2;
     private static final float CONSUMED_PER_TICK = 1F / (CONSUME_SECONDS * 20F);
     private static final int CONSUME_BUFFER_TICKS = 10;
 
     public CupItem(Properties properties) {
-        super(properties, ModEntityTypes.CUP, Cup::create);
+        super(properties, ModEntityTypes.CUP);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class CupItem extends SpawnItem<Cup> {
 
         if (ticksRemaining > CONSUME_TICKS) return;
 
-        contents.withFillLevel(contents.fillLevel() - CONSUMED_PER_TICK).updateItemStack(stack);
+        contents.withFillLevel(contents.fillLevel() - CONSUMED_PER_TICK).applyToItem(stack);
         if (ticksRemaining % 4 == 0) livingEntity.playSound(
                 SoundEvents.GENERIC_DRINK.value(),
                 0.5F,

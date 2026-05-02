@@ -16,7 +16,6 @@ public final class Hotdognalds implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ModEntityDataSerializers.init();
         ModEntityTypes.init();
         ModComponents.init();
         ModCreativeTabs.init();

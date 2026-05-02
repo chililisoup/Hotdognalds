@@ -34,8 +34,8 @@ public final class ModItems {
                         .food(HotdogContents.DOG.getFoodProperties())
         );
         CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> {
-            tab.accept(HotdogContents.dog(1F).getRoundedItemStack());
-            tab.accept(HotdogContents.BUN.getRoundedItemStack());
+            tab.accept(HotdogContents.dog(1F).createRoundedItem());
+            tab.accept(HotdogContents.BUN.createRoundedItem());
         });
 
         CONDIMENT_DISPENSER = register(

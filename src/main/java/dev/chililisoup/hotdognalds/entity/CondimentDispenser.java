@@ -1,6 +1,5 @@
 package dev.chililisoup.hotdognalds.entity;
 
-import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
 import dev.chililisoup.hotdognalds.reg.ModItems;
 import dev.chililisoup.hotdognalds.reg.ModParticles;
 import net.minecraft.core.BlockPos;
@@ -31,8 +30,6 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
-
 public class CondimentDispenser extends Entity {
     private static final EntityDataAccessor<Integer> DATA_COLOR = SynchedEntityData.defineId(CondimentDispenser.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> DATA_PUMPING = SynchedEntityData.defineId(CondimentDispenser.class, EntityDataSerializers.BOOLEAN);
@@ -50,6 +47,7 @@ public class CondimentDispenser extends Entity {
 
     @Nullable
     public static CondimentDispenser create(
+            EntityType<CondimentDispenser> type,
             ServerLevel serverLevel,
             Vec3 position,
             float rotation,
@@ -57,10 +55,9 @@ public class CondimentDispenser extends Entity {
             ItemStack itemStack,
             @Nullable Player player
     ) {
-        Consumer<CondimentDispenser> consumer = EntityType.createDefaultStackConfig(serverLevel, itemStack, player);
-        CondimentDispenser dispenser = ModEntityTypes.CONDIMENT_DISPENSER.create(
+        CondimentDispenser dispenser = type.create(
                 serverLevel,
-                consumer,
+                EntityType.createDefaultStackConfig(serverLevel, itemStack, player),
                 BlockPos.containing(position),
                 entitySpawnReason,
                 true,

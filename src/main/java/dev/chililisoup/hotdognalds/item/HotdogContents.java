@@ -72,18 +72,27 @@ public record HotdogContents(Optional<Float> cookAmt, Optional<Float> bunCookAmt
         return ARGB.opaque(this.sauce.orElse(0));
     }
 
-    public ItemStack getRoundedItemStack() {
+    public ItemStack createRoundedItem() {
+        ItemStack stack = new ItemStack(ModItems.HOTDOG);
+        this.roundAndApplyToItem(stack);
+        return stack;
+    }
+
+    public static void roundItem(ItemStack stack) {
+        HotdogContents contents = stack.get(ModComponents.HOTDOG_CONTENTS);
+        if (contents != null) contents.roundAndApplyToItem(stack);
+    }
+
+    public void roundAndApplyToItem(ItemStack stack) {
         Mutable mutable = this.toMutable();
         if (this.hasDog()) mutable.cookAmt(roundCookAmt(mutable.cookAmt));
         if (this.hasBun()) mutable.bunCookAmt(roundCookAmt(mutable.bunCookAmt));
-        return mutable.toImmutable().getItemStack();
+        mutable.toImmutable().applyToItem(stack);
     }
 
-    private ItemStack getItemStack() {
-        ItemStack result = new ItemStack(ModItems.HOTDOG);
-        result.set(ModComponents.HOTDOG_CONTENTS, this);
-        result.set(DataComponents.FOOD, this.getFoodProperties());
-        return result;
+    public void applyToItem(ItemStack stack) {
+        stack.set(ModComponents.HOTDOG_CONTENTS, this);
+        stack.set(DataComponents.FOOD, this.getFoodProperties());
     }
 
     public FoodProperties getFoodProperties() {

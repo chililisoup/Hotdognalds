@@ -2,28 +2,35 @@ package dev.chililisoup.hotdognalds.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class FoodEntity extends Entity {
+    private static final EntityDataAccessor<ItemStack> DATA_ITEM = SynchedEntityData.defineId(FoodEntity.class, EntityDataSerializers.ITEM_STACK);
+
     protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
     public <T extends FoodEntity> FoodEntity(EntityType<T> type, Level level) {
         super(type, level);
     }
 
-    protected static <T extends FoodEntity> @Nullable T create(
+    public static <T extends FoodEntity> @Nullable T create(
             EntityType<T> type,
             ServerLevel serverLevel,
             Vec3 position,
@@ -42,6 +49,7 @@ public abstract class FoodEntity extends Entity {
         );
         if (foodEntity == null) return null;
 
+        foodEntity.setItem(itemStack.copyWithCount(1));
         foodEntity.snapTo(position, rotation, 0);
         foodEntity.playPlaceSound();
         foodEntity.gameEvent(GameEvent.ENTITY_PLACE, player);
@@ -106,27 +114,43 @@ public abstract class FoodEntity extends Entity {
         }
     }
 
-    protected abstract ItemStack getItemStack();
+    protected abstract Item getDefaultItem();
 
-    protected ItemStack updateItemStack(ItemStack itemStack) {
-        if (this.hasCustomName()) itemStack.set(
-                DataComponents.CUSTOM_NAME, this.getCustomName()
-        );
-        return itemStack;
+    protected ItemStack getItem() {
+        return this.getEntityData().get(DATA_ITEM);
+    }
+
+    protected void setItem(ItemStack stack) {
+        this.getEntityData().set(DATA_ITEM, stack);
     }
 
     @Override
     protected @NotNull Component getTypeName() {
-        return this.getItemStack().getItemName();
+        return this.getItem().getItemName();
     }
 
     @Override
     public ItemStack getPickResult() {
-        return this.getItemStack();
+        return this.getItem().copy();
     }
 
     @Override
     public boolean isPickable() {
         return !this.isRemoved();
+    }
+
+    @Override
+    protected void defineSynchedData(@NotNull SynchedEntityData.Builder entityData) {
+        entityData.define(DATA_ITEM, new ItemStack(this.getDefaultItem()));
+    }
+
+    @Override
+    protected void addAdditionalSaveData(ValueOutput output) {
+        output.store("Item", ItemStack.CODEC, this.getItem());
+    }
+
+    @Override
+    protected void readAdditionalSaveData(@NotNull ValueInput input) {
+        this.setItem(input.read("Item", ItemStack.CODEC).orElseGet(() -> new ItemStack(this.getDefaultItem())));
     }
 }

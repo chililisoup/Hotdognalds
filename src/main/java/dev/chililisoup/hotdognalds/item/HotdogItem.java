@@ -21,9 +21,9 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class HotdogItem extends SpawnItem<Hotdog> implements ProjectileItem {
+public class HotdogItem extends FoodEntityItem<Hotdog> implements ProjectileItem {
     public HotdogItem(Properties properties) {
-        super(properties, ModEntityTypes.HOTDOG, Hotdog::create);
+        super(properties, ModEntityTypes.HOTDOG);
     }
 
     @Override

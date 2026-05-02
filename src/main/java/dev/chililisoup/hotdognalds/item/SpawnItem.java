@@ -60,6 +60,7 @@ public class SpawnItem<T extends Entity> extends Item {
 
         if (level instanceof ServerLevel serverLevel) {
             T entity = this.entityCreator.create(
+                    this.entityType,
                     serverLevel,
                     pos,
                     context.getRotation() + 180F,
@@ -95,6 +96,7 @@ public class SpawnItem<T extends Entity> extends Item {
     @FunctionalInterface
     public interface EntityCreator<T extends Entity> {
         T create(
+                EntityType<T> type,
                 ServerLevel serverLevel,
                 Vec3 position,
                 float rotation,

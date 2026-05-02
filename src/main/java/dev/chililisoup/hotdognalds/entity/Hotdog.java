@@ -2,11 +2,8 @@ package dev.chililisoup.hotdognalds.entity;
 
 import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
-import dev.chililisoup.hotdognalds.reg.ModEntityDataSerializers;
-import dev.chililisoup.hotdognalds.reg.ModEntityTypes;
+import dev.chililisoup.hotdognalds.reg.ModItems;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.ARGB;
@@ -17,40 +14,17 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.gamerules.GameRules;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
 
 public class Hotdog extends FoodEntity implements CondimentCollector {
-    private static final EntityDataAccessor<HotdogContents> DATA_CONTENTS = SynchedEntityData.defineId(
-            Hotdog.class, ModEntityDataSerializers.HOTDOG_CONTENTS
-    );
-
     public Hotdog(EntityType<Hotdog> type, Level level) {
         super(type, level);
-    }
-
-    public static @Nullable Hotdog create(
-            ServerLevel serverLevel,
-            Vec3 position,
-            float rotation,
-            EntitySpawnReason entitySpawnReason,
-            ItemStack itemStack,
-            @Nullable Player player
-    ) {
-        Hotdog hotdog = create(ModEntityTypes.HOTDOG, serverLevel, position, rotation, entitySpawnReason, itemStack, player);
-        if (hotdog == null) return null;
-
-        hotdog.setContents(itemStack.getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG));
-        return hotdog;
     }
 
     @Override
@@ -95,7 +69,7 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
                 return InteractionResult.SUCCESS_SERVER;
             }
         } else if (this.hasBun() && player.isShiftKeyDown()) {
-            ItemStack hotdogStack = this.getMutable().takeBun().toImmutable().getRoundedItemStack();
+            ItemStack hotdogStack = this.getMutable().takeBun().toImmutable().createRoundedItem();
             if ((!offHand && handStack.isEmpty()) || ItemStack.isSameItemSameComponents(handStack, hotdogStack)) {
                 if (!this.isRemoved() && !player.level().isClientSide()) {
                     this.setMutable(this.getMutable().takeDog());
@@ -112,7 +86,7 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
             }
         }
 
-        ItemStack hotdogStack = this.getItemStack();
+        ItemStack hotdogStack = this.getItem();
         if (!handStack.isEmpty() && !ItemStack.isSameItemSameComponents(handStack, hotdogStack))
             return InteractionResult.PASS;
 
@@ -130,11 +104,13 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
     }
 
     public HotdogContents getContents() {
-        return this.getEntityData().get(DATA_CONTENTS);
+        return this.getItemRaw().getOrDefault(ModComponents.HOTDOG_CONTENTS, HotdogContents.DOG);
     }
 
     public void setContents(HotdogContents contents) {
-        this.getEntityData().set(DATA_CONTENTS, contents);
+        ItemStack stack = this.getItemRaw().copy();
+        stack.set(ModComponents.HOTDOG_CONTENTS, contents);
+        this.setItem(stack);
     }
 
     public HotdogContents.Mutable getMutable() {
@@ -206,7 +182,7 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
             this.markHurt();
 
             if (!source.isCreativePlayer()) {
-                ItemStack drop = this.getItemStack();
+                ItemStack drop = this.getItem();
                 Block.popResource(this.level(), this.blockPosition(), drop);
             }
             this.playTakeSound();
@@ -216,22 +192,18 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
     }
 
     @Override
-    protected ItemStack getItemStack() {
-        return this.updateItemStack(this.getContents().getRoundedItemStack());
+    protected Item getDefaultItem() {
+        return ModItems.HOTDOG;
+    }
+
+    private ItemStack getItemRaw() {
+        return super.getItem();
     }
 
     @Override
-    protected void defineSynchedData(@NotNull SynchedEntityData.Builder entityData) {
-        entityData.define(DATA_CONTENTS, HotdogContents.DOG);
-    }
-
-    @Override
-    protected void readAdditionalSaveData(@NotNull ValueInput input) {
-        this.setContents(input.read("HotdogContents", HotdogContents.CODEC).orElse(HotdogContents.DOG));
-    }
-
-    @Override
-    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
-        output.store("HotdogContents", HotdogContents.CODEC, this.getContents());
+    protected ItemStack getItem() {
+        ItemStack stack = this.getItemRaw().copy();
+        HotdogContents.roundItem(stack);
+        return stack;
     }
 }

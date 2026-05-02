@@ -126,7 +126,7 @@ public class HotdogProjectile extends ThrowableItemProjectile {
             if (contents.hasDog() && contents.bunCookAmt().isPresent()) {
                 mutable.takeBun();
                 HotdogContents bun = HotdogContents.bun(contents.bunCookAmt().get());
-                Block.popResourceFromFace(serverLevel, this.blockPosition(), face, bun.getRoundedItemStack());
+                Block.popResourceFromFace(serverLevel, this.blockPosition(), face, bun.createRoundedItem());
             }
 
             item.set(ModComponents.HOTDOG_CONTENTS, mutable.toImmutable());
