@@ -2,7 +2,6 @@ package dev.chililisoup.hotdognalds.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
@@ -14,7 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -27,11 +25,17 @@ import java.util.function.Consumer;
 public class SpawnItem<T extends Entity> extends Item {
     private final EntityType<T> entityType;
     private final EntityCreator<T> entityCreator;
+    private final EntitySpawnReason spawnReason;
 
-    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator) {
+    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator, EntitySpawnReason spawnReason) {
         super(properties);
         this.entityType = entityType;
         this.entityCreator = entityCreator;
+        this.spawnReason = spawnReason;
+    }
+
+    public SpawnItem(Properties properties, EntityType<T> entityType, EntityCreator<T> entityCreator) {
+        this(properties, entityType, entityCreator, EntitySpawnReason.SPAWN_ITEM_USE);
     }
 
     protected boolean requireSneakToPlace(ItemStack itemStack) {
@@ -64,7 +68,7 @@ public class SpawnItem<T extends Entity> extends Item {
                     serverLevel,
                     pos,
                     context.getRotation() + 180F,
-                    EntitySpawnReason.SPAWN_ITEM_USE,
+                    this.spawnReason,
                     itemStack,
                     player
             );
@@ -86,11 +90,6 @@ public class SpawnItem<T extends Entity> extends Item {
     ) {
         if (this.requireSneakToPlace(itemStack))
             builder.accept(Component.translatable("item.hotdognalds.tip.sneak_to_place"));
-
-        TypedEntityData<?> entityData = itemStack.get(DataComponents.ENTITY_DATA);
-        if (entityData == null) return;
-        if (entityData.copyTagWithoutId().getBooleanOr("Invulnerable", false))
-            builder.accept(Component.translatable("item.hotdognalds.tip.invulnerable"));
     }
 
     @FunctionalInterface

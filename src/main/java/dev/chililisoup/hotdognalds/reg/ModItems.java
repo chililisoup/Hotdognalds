@@ -8,13 +8,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.TypedEntityData;
 import net.minecraft.world.item.equipment.Equippable;
 
 import java.util.function.Function;
@@ -42,16 +39,6 @@ public final class ModItems {
                 "condiment_dispenser",
                 properties -> new SpawnItem<>(properties, ModEntityTypes.CONDIMENT_DISPENSER, CondimentDispenser::create)
         );
-        CreativeModeTabEvents.modifyOutputEvent(ModCreativeTabs.MAIN).register(tab -> {
-            ItemStack invulnerableDispenser = CONDIMENT_DISPENSER.getDefaultInstance();
-            CompoundTag data = new CompoundTag();
-            data.putBoolean("Invulnerable", true);
-            invulnerableDispenser.set(DataComponents.ENTITY_DATA, TypedEntityData.of(
-                    ModEntityTypes.CONDIMENT_DISPENSER,
-                    data
-            ));
-            tab.accept(invulnerableDispenser);
-        });
 
         CUP = register(
                 "cup",
