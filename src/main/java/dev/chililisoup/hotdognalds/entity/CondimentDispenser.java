@@ -82,17 +82,19 @@ public class CondimentDispenser extends Entity {
         super.tick();
         if (this.isRemoved()) return;
 
-        if (this.isInterpolating()) this.getInterpolation().interpolate();
+        if (!this.isNoGravity()) {
+            if (this.isInterpolating()) this.getInterpolation().interpolate();
 
-        if (this.isLocalInstanceAuthoritative()) {
-            Vec3 deltaMovement = this.getDeltaMovement()
-                    .scale(0.95)
-                    .add(0, -this.getGravity(), 0);
-            this.setDeltaMovement(deltaMovement);
-            this.move(MoverType.SELF, deltaMovement);
-        } else this.setDeltaMovement(Vec3.ZERO);
+            if (this.isLocalInstanceAuthoritative()) {
+                Vec3 deltaMovement = this.getDeltaMovement()
+                        .scale(0.95)
+                        .add(0, -this.getGravity(), 0);
+                this.setDeltaMovement(deltaMovement);
+                this.move(MoverType.SELF, deltaMovement);
+            } else this.setDeltaMovement(Vec3.ZERO);
+        }
 
-        this.applyEffectsFromBlocks();
+        if (!this.isInvulnerable()) this.applyEffectsFromBlocks();
 
         if (this.level().isClientSide()) {
             this.lastPumpAmt = this.pumpAmt;

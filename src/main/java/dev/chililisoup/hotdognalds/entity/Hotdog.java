@@ -47,6 +47,8 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
 
     @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 location) {
+        if (this.isFixed()) return InteractionResult.PASS;
+
         ItemStack handStack = player.getItemInHand(hand);
         boolean offHand = hand == InteractionHand.OFF_HAND;
 

@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class FoodEntity extends Entity {
     private static final EntityDataAccessor<ItemStack> DATA_ITEM = SynchedEntityData.defineId(FoodEntity.class, EntityDataSerializers.ITEM_STACK);
+    private static final EntityDataAccessor<Boolean> DATA_FIXED = SynchedEntityData.defineId(FoodEntity.class, EntityDataSerializers.BOOLEAN);
 
     protected final InterpolationHandler interpolation = new InterpolationHandler(this);
 
@@ -76,21 +77,25 @@ public abstract class FoodEntity extends Entity {
         super.tick();
         if (this.isRemoved()) return;
 
-        if (this.isInterpolating()) this.getInterpolation().interpolate();
+        if (!this.isNoGravity()) {
+            if (this.isInterpolating()) this.getInterpolation().interpolate();
 
-        if (this.isLocalInstanceAuthoritative()) {
-            Vec3 deltaMovement = this.getDeltaMovement()
-                    .scale(0.95)
-                    .add(0, -this.getGravity(), 0);
-            if (this.onGround()) deltaMovement = deltaMovement.multiply(0.8, 1, 0.8);
-            this.setDeltaMovement(deltaMovement);
-            this.move(MoverType.SELF, deltaMovement);
+            if (this.isLocalInstanceAuthoritative()) {
+                Vec3 deltaMovement = this.getDeltaMovement()
+                        .scale(0.95)
+                        .add(0, -this.getGravity(), 0);
+                if (this.onGround()) deltaMovement = deltaMovement.multiply(0.8, 1, 0.8);
+                this.setDeltaMovement(deltaMovement);
+                this.move(MoverType.SELF, deltaMovement);
+            }
         }
 
-        if (this.level() instanceof ServerLevel serverLevel && this.isInWall())
-            this.hurtServer(serverLevel, this.damageSources().inWall(), 1.0F);
+        if (!this.isInvulnerable()) {
+            if (this.level() instanceof ServerLevel serverLevel && this.isInWall())
+                this.hurtServer(serverLevel, this.damageSources().inWall(), 1.0F);
 
-        this.applyEffectsFromBlocks();
+            this.applyEffectsFromBlocks();
+        }
     }
 
     @Override
@@ -100,6 +105,8 @@ public abstract class FoodEntity extends Entity {
 
     @Override
     public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 location) {
+        if (this.isFixed()) return InteractionResult.PASS;
+
         if (!this.isRemoved() && player.level() instanceof ServerLevel serverLevel) {
             this.kill(serverLevel);
             this.markHurt();
@@ -150,6 +157,14 @@ public abstract class FoodEntity extends Entity {
         return this.getItemRaw().hasFoil();
     }
 
+    public boolean isFixed() {
+        return this.getEntityData().get(DATA_FIXED);
+    }
+
+    public void setFixed(boolean fixed) {
+        this.getEntityData().set(DATA_FIXED, fixed);
+    }
+
     @Override
     protected @NotNull Component getTypeName() {
         return this.getItem().getItemName();
@@ -168,15 +183,18 @@ public abstract class FoodEntity extends Entity {
     @Override
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder entityData) {
         entityData.define(DATA_ITEM, new ItemStack(this.getDefaultItem()));
+        entityData.define(DATA_FIXED, false);
     }
 
     @Override
     protected void addAdditionalSaveData(ValueOutput output) {
         output.store("Item", ItemStack.CODEC, this.getItem());
+        output.putBoolean("Fixed", this.isFixed());
     }
 
     @Override
     protected void readAdditionalSaveData(@NotNull ValueInput input) {
         this.setItem(input.read("Item", ItemStack.CODEC).orElseGet(() -> new ItemStack(this.getDefaultItem())));
+        this.setFixed(input.getBooleanOr("Fixed", false));
     }
 }

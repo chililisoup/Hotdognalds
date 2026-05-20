@@ -37,7 +37,7 @@ public final class ModCreativeTabs {
                 tabKey,
                 FabricCreativeModeTab.builder()
                         .icon(iconSupplier)
-                        .title(Component.translatable("itemGroup.hotdognalds.main"))
+                        .title(Component.translatable("itemGroup.hotdognalds." + name))
                         .build()
         );
 
