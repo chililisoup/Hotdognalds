@@ -75,7 +75,8 @@ public abstract class FoodEntity extends Entity {
 
     @Override
     public void tick() {
-        super.tick();
+        if (!this.isNoGravity() || !this.isInvulnerable()) super.tick();
+        else this.firstTick = false;
         if (this.isRemoved()) return;
 
         if (!this.isNoGravity()) {
