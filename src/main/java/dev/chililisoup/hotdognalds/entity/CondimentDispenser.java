@@ -67,6 +67,7 @@ public class CondimentDispenser extends Entity {
 
         dispenser.setColor(itemStack.get(DataComponents.DYED_COLOR));
         dispenser.snapTo(position, rotation, 0);
+        dispenser.setOnGround(true);
         dispenser.playSound(SoundEvents.PAINTING_PLACE, 0.75F, 1F);
         dispenser.gameEvent(GameEvent.ENTITY_PLACE, player);
         return dispenser;
@@ -212,12 +213,12 @@ public class CondimentDispenser extends Entity {
     }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull ValueInput input) {
-        this.getEntityData().set(DATA_COLOR, input.getIntOr("Color", DEFAULT_COLOR));
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
+        output.putInt("Color", this.getColor());
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
-        output.putInt("Color", this.getColor());
+    protected void readAdditionalSaveData(@NotNull ValueInput input) {
+        this.getEntityData().set(DATA_COLOR, input.getIntOr("Color", DEFAULT_COLOR));
     }
 }

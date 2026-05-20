@@ -54,6 +54,7 @@ public abstract class FoodEntity extends Entity {
 
         foodEntity.setItem(itemStack.copyWithCount(1));
         foodEntity.snapTo(position, rotation, 0);
+        foodEntity.setOnGround(true);
         foodEntity.playPlaceSound();
         foodEntity.gameEvent(GameEvent.ENTITY_PLACE, player);
         return foodEntity;
