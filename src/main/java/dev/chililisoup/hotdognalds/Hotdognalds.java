@@ -23,5 +23,6 @@ public final class Hotdognalds implements ModInitializer {
         ModItems.init();
         ModBlockEntityTypes.init();
         ModParticles.init();
+        ModGameRules.init();
     }
 }

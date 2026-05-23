@@ -2,6 +2,7 @@ package dev.chililisoup.hotdognalds.entity;
 
 import dev.chililisoup.hotdognalds.item.HotdogContents;
 import dev.chililisoup.hotdognalds.reg.ModComponents;
+import dev.chililisoup.hotdognalds.reg.ModGameRules;
 import dev.chililisoup.hotdognalds.reg.ModItems;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -149,18 +150,20 @@ public class Hotdog extends FoodEntity implements CondimentCollector {
 
         if (source.is(DamageTypes.HOT_FLOOR)) {
             HotdogContents contents = this.getContents();
+            float damageScale = level.getGameRules().get(ModGameRules.HOTDOG_COOK_RATE) / 100F;
+
             if (contents.cookAmt().isPresent()) {
                 float cookAmt = contents.cookAmt().get();
                 if (cookAmt < 3F) {
                     this.setCookAmt(
-                            cookAmt + 0.001F * damage * (contents.hasBun() ? 0.5F : 1F)
+                            cookAmt + 0.001F * damage * damageScale * (contents.hasBun() ? 0.5F : 1F)
                     );
                 } else if (this.random.nextFloat() > 0.99F) this.placeFire(level);
             }
 
             if (contents.bunCookAmt().isPresent()) {
                 float bunCookAmt = contents.bunCookAmt().get();
-                if (bunCookAmt < 3F) this.setBunCookAmt(bunCookAmt + 0.002F * damage);
+                if (bunCookAmt < 3F) this.setBunCookAmt(bunCookAmt + 0.002F * damage * damageScale);
                 else if (this.random.nextFloat() > 0.98F) this.placeFire(level);
             }
         } else if (source.is(DamageTypeTags.IS_FIRE)) {
